@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infrastructure Tech Stack Visualisation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Visualisation wrapper that can go full screen -->
+    <div id="visualisation-wrapper">
+      
+      <!-- Top Navbar with Instruction and Full Screen Action -->
+      <div id="navbar" data-node-id="24:136" data-name="Navbar">
+        <div id="navbar-left" data-node-id="24:138">
+          <h2 id="detail-title" data-node-id="24:139">Select a service</h2>
+          <p id="detail-desc" data-node-id="24:140">Click on any node in the stack diagram below to view technical details and highlight infrastructure flows.</p>
+        </div>
+        <button id="fullscreen-btn" aria-label="Toggle Full Screen" title="Toggle Full Screen" data-node-id="24:141">
+          <div data-node-id="24:142" data-name="Full Screen">
+            <img src="assets/fullscreen.png" alt="Full Screen Icon">
+          </div>
+        </button>
+      </div>
+
+      <!-- Tech Stack Canvas Container -->
+      <div id="canvas-container">
+        <h1 id="canvas-title">The Tech Stack</h1>
+        
+        <!-- Scrollable stack canvas -->
+        <div id="canvas">
+          <div id="stack-wrapper">
+            <!-- Layers and nodes will be dynamically loaded here -->
+          </div>
+        </div>
+        
+
+      </div>
+
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "infrastructures-visualisation",
+  "version": "1.0.0",
+  "description": "Interactive Stack Diagram Data Visualisation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "lucide-static": "^1.16.0",
+    "simple-icons": "^16.20.0"
+  }
+}

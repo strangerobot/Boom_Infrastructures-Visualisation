@@ -1,0 +1,458 @@
+/* --- Design System & CSS Variables --- */
+:root {
+  --bg-frame: #f2eee9;
+  --bg-canvas: #faf6f0;
+  --bg-card: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --border-inactive: rgba(0, 0, 0, 0.2);
+  --font-serif: 'IBM Plex Serif', Georgia, serif;
+  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  --text-main: #000000;
+  --text-muted: #8d8d8d;
+  
+  --transition-speed: 0.3s;
+}
+
+/* --- Basic Reset --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: transparent;
+  color: var(--text-main);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+}
+
+#app {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* --- Visualisation Wrapper --- */
+#visualisation-wrapper {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 25px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* --- Top Navbar (Merged Details & Controls) --- */
+#navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 15px 25px 20px 25px;
+  background-color: #ffffff;
+}
+
+#navbar-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-grow: 1;
+  align-items: flex-start;
+  word-break: break-word;
+  filter: drop-shadow(0px 4px 6.9px rgba(0, 0, 0, 0.05));
+}
+
+#detail-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: normal;
+  color: #000000;
+  margin: 0;
+}
+
+#detail-desc {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #000000;
+  max-width: 300px;
+  margin: 0;
+}
+
+#fullscreen-btn {
+  background-color: #faf6f0;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  width: 64px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+  flex-shrink: 0;
+}
+
+#fullscreen-btn:hover {
+  background-color: #f2eee9;
+}
+
+#fullscreen-btn img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+/* --- Tech Stack Canvas Container --- */
+#canvas-container {
+  background-color: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+  border-radius: 26px 26px 0 0;
+  padding: 20px 40px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+#canvas-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* --- Interactive Canvas Viewport --- */
+#canvas {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  position: relative;
+  border-radius: 20px;
+  cursor: default;
+}
+
+#stack-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- Layer Structures --- */
+.layer-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.layer {
+  background-color: var(--bg-frame);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transition: all var(--transition-speed) ease;
+  position: relative;
+}
+
+.layer.width-full {
+  width: 100%;
+}
+
+.layer.width-half {
+  flex: 1;
+}
+
+.layer-name {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+/* Flex row containing standard nodes and sublayers */
+.layer-content {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  min-height: 80px;
+}
+.layer-content.has-sublayer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.layer-content.has-sublayer .nodes-area {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+}
+
+.layer-content.has-sublayer .sublayer-box {
+  flex: 0 0 140px;
+}
+
+.nodes-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- Sublayer Style (Value Addons Box) --- */
+.sublayer-box {
+  background-color: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  border-radius: 15px;
+  padding: 8px 10px;
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+  box-shadow: inset 0px 1px 3px rgba(0,0,0,0.02);
+  z-index: 2;
+}
+
+.sublayer-title {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-main);
+  text-align: center;
+}
+
+.sublayer-nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* --- Nodes --- */
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 65px;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.8;
+  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+/* Standard Node Icon */
+.node-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 2px solid var(--border-inactive);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.03);
+  transition: all var(--transition-speed) ease;
+}
+
+.node-icon img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Standard Node Label */
+.node-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-main);
+  text-align: center;
+  width: 100%;
+  word-wrap: break-word;
+  transition: all var(--transition-speed) ease;
+}
+
+/* Sublayer Pill Node */
+.sublayer-node {
+  background-color: var(--bg-frame);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 4px 6px;
+  cursor: pointer;
+  text-align: center;
+  opacity: 0.8;
+  transition: all var(--transition-speed) ease, opacity var(--transition-speed) ease;
+}
+
+.sublayer-node-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all var(--transition-speed) ease;
+}
+
+/* --- Interactive States / Highlight Themes --- */
+
+/* 1. Normal state (No active selection) - default styling */
+
+/* 2. active-selection class is applied to #stack-wrapper when a node is clicked */
+.active-selection .node,
+.active-selection .sublayer-node {
+  opacity: 0.3; /* All nodes dim to 30% when unselected */
+}
+
+/* 3. Primary Selected Node (100% opacity, glow border, bold label) */
+.active-selection .node.state-active,
+.active-selection .sublayer-node.state-active {
+  opacity: 1 !important;
+  transform: scale(1.03);
+}
+
+.active-selection .node.state-active .node-icon {
+  border-width: 3px;
+  border-color: var(--node-color) !important;
+  box-shadow: 0px 0px 14px var(--node-glow-color) !important;
+  background-color: #ffffff;
+}
+
+.active-selection .sublayer-node.state-active {
+  background-color: #ffffff;
+  border-width: 2px;
+  border-color: var(--node-color) !important;
+  box-shadow: 0px 0px 10px var(--node-glow-color) !important;
+}
+
+/* 4. Connected Nodes (100% opacity, fill white, no outline) */
+.active-selection .node.state-connected,
+.active-selection .sublayer-node.state-connected {
+  opacity: 1 !important;
+}
+
+.active-selection .node.state-connected .node-icon {
+  background-color: #ffffff;
+  border-color: transparent !important;
+  box-shadow: none;
+}
+
+.active-selection .sublayer-node.state-connected {
+  background-color: #ffffff;
+  border-color: transparent !important;
+  box-shadow: none;
+}
+
+/* Hover effects for interactive feedback */
+.node:hover:not(.state-active) .node-icon {
+  transform: translateY(-2px);
+  border-color: rgba(0,0,0,0.4);
+}
+
+.sublayer-node:hover:not(.state-active) {
+  transform: translateY(-1px);
+  background-color: #ffffff;
+  border-color: rgba(0,0,0,0.3);
+}
+
+
+
+/* --- Fullscreen Mode --- */
+#visualisation-wrapper:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow-y: auto;
+  background-color: #ffffff;
+}
+
+#visualisation-wrapper:fullscreen #navbar {
+  padding: 15px 30px;
+}
+
+#visualisation-wrapper:fullscreen #canvas-container {
+  margin: 0;
+  border-radius: 0;
+  flex-grow: 1;
+}
+
+/* Vendor prefixes for fullscreen compatibility */
+#visualisation-wrapper:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow-y: auto;
+  background-color: #ffffff;
+}
+#visualisation-wrapper:-webkit-full-screen #navbar {
+  padding: 15px 30px;
+}
+#visualisation-wrapper:-webkit-full-screen #canvas-container {
+  margin: 0;
+  border-radius: 0;
+  flex-grow: 1;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: #c8c0b5;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b0a79b;
+}
+
+/* --- Mobile View --- */
+@media (max-width: 600px) {
+  .layer-content.has-sublayer .sublayer-box {
+    align-self: flex-end;
+  }
+}
