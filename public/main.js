@@ -279,6 +279,106 @@ function renderStack() {
   });
 }
 
+// --- SVG Connection Lines Drawer ---
+function drawLines() {
+  const svg = document.getElementById('connections-svg');
+  if (!svg) return;
+  svg.innerHTML = '';
+  
+  if (nodesData.length === 0) return;
+  
+  const canvasRect = canvas.getBoundingClientRect();
+  
+  // Helper to get center coordinate of a node relative to the canvas
+  function getCenter(el) {
+    const iconEl = el.querySelector('.node-icon') || el;
+    const rect = iconEl.getBoundingClientRect();
+    return {
+      x: (rect.left + rect.right) / 2 - canvasRect.left,
+      y: (rect.top + rect.bottom) / 2 - canvasRect.top
+    };
+  }
+  
+  // Cache all node element centers
+  const centers = {};
+  const allNodeElements = document.querySelectorAll('[data-node-id]');
+  allNodeElements.forEach(el => {
+    const id = el.dataset.nodeId;
+    centers[id] = getCenter(el);
+  });
+  
+  // Generate unique connection pairs to draw
+  const pairs = [];
+  const visited = new Set();
+  
+  nodesData.forEach(node => {
+    const fromId = node.id;
+    if (!centers[fromId]) return;
+    
+    node.connections.forEach(toId => {
+      if (!centers[toId]) return;
+      
+      const key = [fromId, toId].sort().join('-');
+      if (!visited.has(key)) {
+        visited.add(key);
+        pairs.push({ from: fromId, to: toId });
+      }
+    });
+  });
+  
+  // Render SVG line elements
+  pairs.forEach(pair => {
+    const fromCenter = centers[pair.from];
+    const toCenter = centers[pair.to];
+    
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', fromCenter.x);
+    line.setAttribute('y1', fromCenter.y);
+    line.setAttribute('x2', toCenter.x);
+    line.setAttribute('y2', toCenter.y);
+    
+    if (selectedNodeId) {
+      const isActiveConnection = (pair.from === selectedNodeId || pair.to === selectedNodeId);
+      if (isActiveConnection) {
+        // Highlighted active connection
+        const activeNode = nodesData.find(n => n.id === selectedNodeId);
+        line.setAttribute('stroke', activeNode ? activeNode.activeColor : '#bc0000');
+        line.setAttribute('stroke-width', '2');
+        line.setAttribute('stroke-dasharray', '6,4');
+        line.setAttribute('opacity', '0.9');
+        
+        // Dash flow animation
+        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        animate.setAttribute('attributeName', 'stroke-dashoffset');
+        animate.setAttribute('values', '10;0');
+        animate.setAttribute('dur', '1s');
+        animate.setAttribute('repeatCount', 'indefinite');
+        line.appendChild(animate);
+      } else {
+        // Dimmed inactive connection
+        line.setAttribute('stroke', 'rgba(0, 0, 0, 0.05)');
+        line.setAttribute('stroke-width', '1');
+        line.setAttribute('opacity', '0.2');
+      }
+    } else {
+      // Default: light grey static lines
+      line.setAttribute('stroke', 'rgba(0, 0, 0, 0.07)');
+      line.setAttribute('stroke-width', '1.2');
+      line.setAttribute('opacity', '0.6');
+    }
+    
+    svg.appendChild(line);
+  });
+}
+
+// Observe canvas size changes to redraw connection lines automatically
+const resizeObserver = new ResizeObserver(() => {
+  drawLines();
+});
+if (canvas) {
+  resizeObserver.observe(canvas);
+}
+
 // Click to select node, highlight relations, and update description
 function selectNode(nodeId) {
   if (selectedNodeId === nodeId) {
@@ -314,6 +414,9 @@ function selectNode(nodeId) {
       }
     }
   });
+  
+  // Redraw connection lines
+  drawLines();
 }
 
 // Clear selected states
@@ -325,6 +428,9 @@ function clearSelection() {
   allNodeElements.forEach(el => {
     el.classList.remove('state-active', 'state-connected');
   });
+  
+  // Clear highlights and reset lines to default style
+  drawLines();
   
   // Reset detail box
   detailTitle.textContent = 'Select a service';
