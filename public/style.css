@@ -577,14 +577,14 @@ body {
 
   /* Make icons and text 20% larger than previous mobile layout */
   .node {
-    width: 60px;
+    width: 48px;
     /* increased by ~20% */
   }
 
   .node-icon {
-    width: 36px;
+    width: 32px;
     /* increased by ~20% */
-    height: 36px;
+    height: 32px;
   }
 
   .node-icon img {
