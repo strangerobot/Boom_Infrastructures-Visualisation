@@ -111,6 +111,8 @@ async function init() {
     const csvText = await response.text();
     nodesData = parseDataCSV(csvText);
     renderStack();
+    // Draw connection lines on initial load
+    drawLines();
   } catch (error) {
     console.error('Error loading visualisation data:', error);
     detailTitle.textContent = 'Error Loading Data';
@@ -345,7 +347,7 @@ function drawLines() {
         line.setAttribute('stroke', activeNode ? activeNode.activeColor : '#bc0000');
         line.setAttribute('stroke-width', '2');
         line.setAttribute('stroke-dasharray', '6,4');
-        line.setAttribute('opacity', '0.9');
+        line.setAttribute('opacity', '0.6');
         
         // Dash flow animation
         const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
@@ -361,10 +363,11 @@ function drawLines() {
         line.setAttribute('opacity', '0.1');
       }
     } else {
-      // Default: light grey static lines
-      line.setAttribute('stroke', 'rgba(0, 0, 0, 0.03)');
+      // Default: light grey dotted lines
+      line.setAttribute('stroke', 'rgba(0, 0, 0, 0.15)');
       line.setAttribute('stroke-width', '1');
-      line.setAttribute('opacity', '0.35');
+      line.setAttribute('stroke-dasharray', '3,4');
+      line.setAttribute('opacity', '0.45');
     }
     
     svg.appendChild(line);
