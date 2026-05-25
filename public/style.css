@@ -22,7 +22,8 @@
 }
 
 html, body {
-  height: 100%;
+  height: auto;
+  overflow: auto;
 }
 
 body {
@@ -33,15 +34,14 @@ body {
   margin: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  align-items: flex-start;
 }
 
 #app {
   width: 100%;
   max-width: 100%;
-  height: 100%;
-  max-height: 100%;
+  height: auto;
+  max-height: none;
 }
 
 /* --- Visualisation Wrapper --- */
@@ -50,8 +50,8 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 25px;
   width: 100%;
-  height: 100%;
-  max-height: 100%;
+  height: auto;
+  max-height: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -183,10 +183,10 @@ body {
   width: 100%;
   max-width: 580px;
   margin: 0 auto;
-  padding: 5px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 24px; /* Spaced out vertically */
 }
 
 /* --- Layer Structures --- */
@@ -200,7 +200,7 @@ body {
   background-color: var(--bg-frame);
   border: 1px solid var(--border-color);
   border-radius: 20px;
-  padding: 4px 6px;
+  padding: 10px 12px; /* Spaced out padding */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -255,7 +255,7 @@ body {
 .nodes-area {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px; /* Spaced out nodes */
   justify-content: center;
   align-items: center;
 }
@@ -485,11 +485,28 @@ body {
 
 /* --- Mobile View --- */
 @media (max-width: 600px) {
+  html, body {
+    height: auto;
+    overflow: auto;
+  }
+  body {
+    align-items: flex-start;
+  }
+  #app {
+    height: auto;
+    max-height: none;
+  }
   #visualisation-wrapper {
     border-radius: 12px;
     width: calc(100vw - 2px);
-    height: calc(100% - 2px);
+    height: auto;
+    max-height: none;
     margin: 1px;
+  }
+
+  #stack-wrapper {
+    gap: 8px;
+    padding: 5px;
   }
 
   .layer-content.has-sublayer .sublayer-box {
@@ -498,7 +515,7 @@ body {
 
   /* Reduce space around and gaps on mobile even more */
   #canvas-container {
-    padding: 3px 2px;
+    padding: 24px 2px 32px 2px; /* increased vertical padding */
     border-radius: 12px 12px 0 0;
   }
   .layer-row {
@@ -519,12 +536,12 @@ body {
     padding: 10px 10px;
   }
   #detail-title {
-    font-size: 11px;
+    font-size: 13px;
   }
   #detail-desc {
-    font-size: 11px;
+    font-size: 13px;
     max-width: 240px;
-    height: calc(3 * 1.3 * 11px);
+    height: calc(3 * 1.3 * 13px);
     overflow: hidden;
   }
   #fullscreen-btn {
@@ -537,43 +554,43 @@ body {
     height: 24px;
   }
 
-  /* Make icons and text 25% smaller on mobile */
+  /* Make icons and text 20% larger than previous mobile layout */
   .node {
-    width: 44px;
+    width: 62px; /* increased by ~20% */
   }
   .node-icon {
-    width: 32px;
-    height: 32px;
+    width: 46px; /* increased by ~20% */
+    height: 46px;
   }
   .node-icon img {
-    width: 16px;
-    height: 16px;
+    width: 23px; /* increased by ~20% */
+    height: 23px;
   }
   .node-label {
-    font-size: 8px;
+    font-size: 14px;
   }
   
   .layer-name {
-    font-size: 10px;
+    font-size: 14px; /* increased by ~20% */
     margin-bottom: 3px;
   }
-  
+
   .sublayer-box {
-    width: 95px;
+    width: 136px; /* increased by ~20% */
     padding: 2px;
     border-radius: 8px;
   }
   .layer-content.has-sublayer .sublayer-box {
-    flex: 0 0 95px;
+    flex: 0 0 136px;
   }
   .sublayer-title {
-    font-size: 8.5px;
+    font-size: 12px; /* increased by ~20% */
   }
   .sublayer-node {
     padding: 1px 2px;
     border-radius: 6px;
   }
   .sublayer-node-label {
-    font-size: 8px;
+    font-size: 12px; /* increased by ~20% */
   }
 }

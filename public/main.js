@@ -356,15 +356,15 @@ function drawLines() {
         line.appendChild(animate);
       } else {
         // Dimmed inactive connection
-        line.setAttribute('stroke', 'rgba(0, 0, 0, 0.05)');
-        line.setAttribute('stroke-width', '1');
-        line.setAttribute('opacity', '0.2');
+        line.setAttribute('stroke', 'rgba(0, 0, 0, 0.02)');
+        line.setAttribute('stroke-width', '0.8');
+        line.setAttribute('opacity', '0.1');
       }
     } else {
       // Default: light grey static lines
-      line.setAttribute('stroke', 'rgba(0, 0, 0, 0.07)');
-      line.setAttribute('stroke-width', '1.2');
-      line.setAttribute('opacity', '0.6');
+      line.setAttribute('stroke', 'rgba(0, 0, 0, 0.03)');
+      line.setAttribute('stroke-width', '1');
+      line.setAttribute('opacity', '0.35');
     }
     
     svg.appendChild(line);
