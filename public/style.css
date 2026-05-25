@@ -7,10 +7,10 @@
   --border-inactive: rgba(0, 0, 0, 0.2);
   --font-serif: 'IBM Plex Serif', Georgia, serif;
   --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
+
   --text-main: #000000;
   --text-muted: #8d8d8d;
-  
+
   --transition-speed: 0.3s;
 }
 
@@ -21,8 +21,9 @@
   padding: 0;
 }
 
-html, body {
-  height: auto;
+html,
+body {
+  height: 100vh;
   overflow: auto;
 }
 
@@ -40,7 +41,7 @@ body {
 #app {
   width: 100%;
   max-width: 100%;
-  height: auto;
+  height: 100vh;
   max-height: none;
 }
 
@@ -50,13 +51,13 @@ body {
   border: 1px solid var(--border-color);
   border-radius: 25px;
   width: 100%;
-  height: auto;
+  height: 100vh;
   max-height: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  transition: all 0.1s ease;
   position: relative;
 }
 
@@ -171,7 +172,7 @@ body {
 /* --- Interactive Canvas Viewport --- */
 #canvas {
   width: 100%;
-  height: auto;
+  height: 100%;
   overflow: visible;
   position: relative;
   border-radius: 20px;
@@ -186,7 +187,8 @@ body {
   padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 24px; /* Spaced out vertically */
+  gap: 24px;
+  /* Spaced out vertically */
 }
 
 /* --- Layer Structures --- */
@@ -200,7 +202,8 @@ body {
   background-color: var(--bg-frame);
   border: 1px solid var(--border-color);
   border-radius: 20px;
-  padding: 10px 12px; /* Spaced out padding */
+  padding: 10px 12px;
+  /* Spaced out padding */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -236,6 +239,7 @@ body {
   position: relative;
   min-height: 50px;
 }
+
 .layer-content.has-sublayer {
   display: flex;
   justify-content: space-between;
@@ -255,7 +259,8 @@ body {
 .nodes-area {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px; /* Spaced out nodes */
+  gap: 12px;
+  /* Spaced out nodes */
   justify-content: center;
   align-items: center;
 }
@@ -271,7 +276,7 @@ body {
   flex-direction: column;
   gap: 6px;
   flex-shrink: 0;
-  box-shadow: inset 0px 1px 3px rgba(0,0,0,0.02);
+  box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .sublayer-title {
@@ -313,7 +318,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0px 2px 5px rgba(0,0,0,0.03);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.03);
   transition: all var(--transition-speed) ease;
 }
 
@@ -367,7 +372,8 @@ body {
 /* 2. active-selection class is applied to #stack-wrapper when a node is clicked */
 .active-selection .node,
 .active-selection .sublayer-node {
-  opacity: 0.3; /* All nodes dim to 30% when unselected */
+  opacity: 0.3;
+  /* All nodes dim to 30% when unselected */
 }
 
 /* 3. Primary Selected Node (100% opacity, glow border, bold label) */
@@ -412,13 +418,13 @@ body {
 /* Hover effects for interactive feedback */
 .node:hover:not(.state-active) .node-icon {
   transform: translateY(-2px);
-  border-color: rgba(0,0,0,0.4);
+  border-color: rgba(0, 0, 0, 0.4);
 }
 
 .sublayer-node:hover:not(.state-active) {
   transform: translateY(-1px);
   background-color: #ffffff;
-  border-color: rgba(0,0,0,0.3);
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
 
@@ -458,9 +464,11 @@ body {
   overflow-y: auto;
   background-color: #ffffff;
 }
+
 #visualisation-wrapper:-webkit-full-screen #navbar {
   padding: 15px 30px;
 }
+
 #visualisation-wrapper:-webkit-full-screen #canvas-container {
   margin: 0;
   border-radius: 0;
@@ -472,34 +480,42 @@ body {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--bg-canvas);
 }
+
 ::-webkit-scrollbar-thumb {
   background: #c8c0b5;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #b0a79b;
 }
 
 /* --- Mobile View --- */
 @media (max-width: 600px) {
-  html, body {
-    height: auto;
+
+  html,
+  body {
+    height: 100%;
     overflow: auto;
   }
+
   body {
     align-items: flex-start;
   }
+
   #app {
-    height: auto;
+    height: 100vh;
     max-height: none;
   }
+
   #visualisation-wrapper {
     border-radius: 12px;
     width: calc(100vw - 2px);
-    height: auto;
+    height: 100vh;
     max-height: none;
     margin: 1px;
   }
@@ -515,40 +531,48 @@ body {
 
   /* Reduce space around and gaps on mobile even more */
   #canvas-container {
-    padding: 24px 2px 32px 2px; /* increased vertical padding */
+    padding: 24px 2px 32px 2px;
+    /* increased vertical padding */
     border-radius: 12px 12px 0 0;
   }
+
   .layer-row {
     gap: 6px;
   }
+
   .layer {
     padding: 1.5px 2px;
     border-radius: 10px;
   }
+
   .nodes-area {
     gap: 6px;
   }
-  
+
   /* Top header elements smaller on mobile */
   #navbar {
     align-items: flex-start;
     min-height: 56px;
     padding: 10px 10px;
   }
+
   #detail-title {
     font-size: 13px;
   }
+
   #detail-desc {
     font-size: 13px;
     max-width: 240px;
     height: calc(3 * 1.3 * 13px);
     overflow: hidden;
   }
+
   #fullscreen-btn {
     width: 44px;
     height: 36px;
     border-radius: 8px;
   }
+
   #fullscreen-btn img {
     width: 24px;
     height: 24px;
@@ -556,41 +580,56 @@ body {
 
   /* Make icons and text 20% larger than previous mobile layout */
   .node {
-    width: 62px; /* increased by ~20% */
+    width: 50px;
+    /* increased by ~20% */
   }
+
   .node-icon {
-    width: 46px; /* increased by ~20% */
-    height: 46px;
+    width: 36px;
+    /* increased by ~20% */
+    height: 36px;
   }
+
   .node-icon img {
-    width: 23px; /* increased by ~20% */
+    width: 23px;
+    /* increased by ~20% */
     height: 23px;
   }
+
   .node-label {
-    font-size: 14px;
+    font-size: 10px;
   }
-  
+
   .layer-name {
-    font-size: 14px; /* increased by ~20% */
-    margin-bottom: 3px;
+    font-size: 12px;
+    /* increased by ~20% */
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   .sublayer-box {
-    width: 136px; /* increased by ~20% */
-    padding: 2px;
+    width: 136px;
+    /* increased by ~20% */
+    padding: 8px;
     border-radius: 8px;
   }
+
   .layer-content.has-sublayer .sublayer-box {
     flex: 0 0 136px;
   }
+
   .sublayer-title {
-    font-size: 12px; /* increased by ~20% */
+    font-size: 12px;
+    /* increased by ~20% */
   }
+
   .sublayer-node {
     padding: 1px 2px;
     border-radius: 6px;
   }
+
   .sublayer-node-label {
-    font-size: 12px; /* increased by ~20% */
+    font-size: 12px;
+    /* increased by ~20% */
   }
 }
