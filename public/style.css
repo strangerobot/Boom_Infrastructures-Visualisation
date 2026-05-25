@@ -17,14 +17,14 @@
 /* --- Basic Reset --- */
 * {
   box-sizing: border-box;
-  margin: 1px;
+  margin: 0px;
   padding: 0;
 }
 
 html,
 body {
   height: 100vh;
-  overflow: auto;
+  overflow: hidden;
 }
 
 body {
