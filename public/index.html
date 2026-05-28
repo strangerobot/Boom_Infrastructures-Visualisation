@@ -15,61 +15,71 @@
     <div id="visualisation-wrapper">
       
       <!-- Top Navbar with Title and Full Screen Action -->
-      <div id="navbar" data-node-id="24:136" data-name="Navbar">
-        <div id="navbar-left" data-node-id="24:138">
+      <div id="navbar" data-node-id="41:503" data-name="Navbar">
+        <div id="navbar-left">
           <h2 id="diagram-title">Infrastructure Tech Stack</h2>
         </div>
-        <button id="fullscreen-btn" aria-label="Toggle Full Screen" title="Toggle Full Screen" data-node-id="24:141">
-          <div data-node-id="24:142" data-name="Full Screen">
+        <button id="fullscreen-btn" aria-label="Toggle Full Screen" title="Toggle Full Screen" data-node-id="41:506">
+          <div data-node-id="41:507" data-name="Full Screen">
             <img src="assets/fullscreen.png" alt="Full Screen Icon">
           </div>
         </button>
       </div>
 
       <!-- Tech Stack Canvas Container -->
-      <div id="canvas-container">
-        <!-- Central Workflow Selector -->
-        <div id="workflow-selector-container">
-          <div id="workflow-selector-label">Select a workflow to learn how this infra is used</div>
-          <div class="custom-select-wrapper">
-            <select id="workflow-select">
-              <!-- Dynamically populated -->
-            </select>
-            <span class="custom-select-arrow"></span>
-          </div>
-        </div>
+      <div id="canvas-container" data-node-id="41:508">
         
-        <!-- Core Infrastructure Badge -->
-        <div id="core-infra-badge">
-          <span>Core infrastructure (cloudflare, DNS) providers enable all these layers</span>
-          <div class="badge-icons">
-            <div class="badge-icon cloudflare" title="Cloudflare">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17.5 19A4.5 4.5 0 0 0 22 14.5c0-2-1.3-3.7-3.2-4.2A5.5 5.5 0 0 0 8.5 7a5 5 0 0 0-4 7.5A4.5 4.5 0 0 0 6.5 19z" />
-              </svg>
+        <!-- Workflow Selection Header -->
+        <div id="workflow-section" data-node-id="41:516">
+          <p id="workflow-label">Select a workflow to learn how this infra is used</p>
+          <div id="workflow-select-wrapper" data-node-id="41:518">
+            <div id="workflow-selected-option">
+              <span id="workflow-selected-text">Select a workflow...</span>
+              <div id="workflow-select-arrow">
+                <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
             </div>
-            <div class="badge-icon dns" title="DNS">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="2" y1="12" x2="22" y2="12" />
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
+            <div id="workflow-dropdown-list" class="hidden">
+              <!-- Options populated dynamically -->
             </div>
           </div>
+          <div id="workflow-backdrop" class="hidden"></div>
         </div>
-        
+
         <!-- Scrollable stack canvas -->
-        <div id="canvas">
+        <div id="canvas" data-node-id="41:521">
+          <!-- Static Core Infrastructure Header -->
+          <div id="infra-header" data-node-id="41:522">
+            <p id="infra-text">Core infrastructure (cloudflare, DNS) providers enable all these layers</p>
+            <div id="infra-icons">
+              <div class="infra-icon-wrapper" title="Cloudflare"><img src="assets/cloudflare.png" alt="Cloudflare"></div>
+              <div class="infra-icon-wrapper" title="DNS"><img src="assets/dns.png" alt="DNS"></div>
+            </div>
+          </div>
+
           <svg id="connections-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></svg>
+          
           <div id="stack-wrapper">
             <!-- Layers and nodes will be dynamically loaded here -->
           </div>
+
+          <!-- Tooltip injected via JS -->
         </div>
         
-
       </div>
 
     </div>
+  </div>
+
+  <!-- Floating node tooltip -->
+  <div id="node-tooltip" class="hidden" role="tooltip">
+    <div id="tooltip-header">
+      <div id="tooltip-icon-container"></div>
+      <strong id="tooltip-title"></strong>
+    </div>
+    <p id="tooltip-desc"></p>
   </div>
 
   <script src="main.js"></script>

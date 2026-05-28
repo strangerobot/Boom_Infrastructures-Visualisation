@@ -1,21 +1,11 @@
 /* --- Design System & CSS Variables --- */
 :root {
-  --bg-frame: #f2eee9;
-  --bg-canvas: #faf6f0;
-  --bg-card: #ffffff;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --border-inactive: rgba(0, 0, 0, 0.2);
+  --bg-frame: #ffffff;
+  --bg-canvas: #fbfbfb;
   --font-serif: 'IBM Plex Serif', Georgia, serif;
   --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
-  --text-main: #000000;
-  --text-muted: #666666;
-  
+  --border-color: rgba(0, 0, 0, 0.1);
   --transition-speed: 0.3s;
-  
-  /* Fallback workflow colors (updated dynamically by JS) */
-  --workflow-color: #bc0000;
-  --workflow-glow-color: rgba(188, 0, 0, 0.25);
 }
 
 /* --- Basic Reset --- */
@@ -26,16 +16,18 @@
 }
 
 html, body {
-  height: 100vh;
-  overflow: hidden;
+  height: 100% !important;
+  min-height: 100% !important;
+  margin: 0;
+  padding: 0;
+  overflow: hidden !important;
+  background-color: transparent !important;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: transparent;
-  color: var(--text-main);
-  padding: 0;
-  margin: 0;
+  background-color: transparent !important;
+  color: #000000;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -44,23 +36,27 @@ body {
 #app {
   width: 100%;
   max-width: 100%;
-  height: 100vh;
-  max-height: none;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
-/* --- Visualisation Wrapper --- */
 #visualisation-wrapper {
   background-color: #ffffff;
-  border: 1px solid var(--border-color);
-  border-radius: 25px;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 25px !important;
   width: 100%;
-  height: 100vh;
-  max-height: none;
+  max-width: 1000px;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  box-shadow: none; /* Removed for clean embedding */
-  transition: all 0.3s ease;
+  overflow: hidden !important;
   position: relative;
 }
 
@@ -69,28 +65,28 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 10px 20px;
   background-color: #ffffff;
-  border-bottom: 1px solid var(--border-color);
-  min-height: 78px; /* Figma Navbar Height */
+  min-height: 50px;
   flex-shrink: 0;
 }
 
 #navbar-left {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
 }
 
 #diagram-title {
   font-family: var(--font-serif);
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 500;
-  color: #111111;
+  color: #000000;
   margin: 0;
 }
 
 #fullscreen-btn {
-  background-color: #faf6f0;
+  background-color: rgba(255, 255, 255, 0.87);
   border: 1px solid var(--border-color);
   border-radius: 10px;
   width: 64px;
@@ -110,225 +106,318 @@ body {
 }
 
 #fullscreen-btn:active {
-  background-color: #cfc7c0;
+  background-color: #ded6cf;
   transform: translateY(0);
 }
 
 #fullscreen-btn img {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
 }
 
 /* --- Canvas Container --- */
 #canvas-container {
   background-color: var(--bg-canvas);
-  border: 1.5px dashed rgba(0, 0, 0, 0.15);
-  border-radius: 26px;
-  padding: 24px 30px;
-  margin: 0 25px 25px 25px;
+  border-top: 1px solid var(--border-color);
+  padding: 15px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
+  justify-content: flex-start;
   flex-grow: 1;
-  overflow-y: auto;
+  min-height: 0;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  width: 100%;
 }
 
-/* --- Central Workflow Selector --- */
-#workflow-selector-container {
+/* --- Workflow Selection Header --- */
+#workflow-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  margin-bottom: 30px;
   width: 100%;
+  margin-bottom: 15px;
   flex-shrink: 0;
 }
 
-#workflow-selector-label {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
+#workflow-label {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  margin: 0;
 }
 
-.custom-select-wrapper {
+#workflow-select-wrapper {
   position: relative;
   width: 100%;
-  max-width: 400px; /* Figma dropdown width */
-}
-
-#workflow-select {
-  width: 100%;
-  padding: 12px 40px 12px 20px;
-  font-family: var(--font-serif);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--workflow-color);
+  max-width: 400px;
+  height: 44px;
   background-color: #ffffff;
-  border: 2px solid var(--workflow-color);
-  border-radius: 14px;
-  appearance: none;
-  -webkit-appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-speed) ease;
   cursor: pointer;
-  transition: all 0.3s ease;
-  outline: none;
-  text-align-last: center; /* Centers option text */
+  user-select: none;
 }
 
-#workflow-select:hover {
-  background-color: #fafafa;
+#workflow-selected-option {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: #000000;
+  font-weight: 500;
+  transition: color var(--transition-speed) ease;
 }
 
-.custom-select-arrow {
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid var(--workflow-color);
-  pointer-events: none;
-  transition: border-top-color 0.3s ease;
+#workflow-selected-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* --- Core Infrastructure Badge --- */
-#core-infra-badge {
-  position: absolute;
-  top: 20px;
-  right: 30px;
+#workflow-select-arrow {
+  color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 500;
-  color: #333333;
-  pointer-events: none;
-  max-width: 320px;
-  text-align: right;
-  line-height: 1.3;
-  z-index: 10;
+  transition: color var(--transition-speed) ease, transform 0.2s ease;
 }
 
-.badge-icons {
+#workflow-select-wrapper.open #workflow-select-arrow {
+  transform: rotate(180deg);
+}
+
+#workflow-dropdown-list {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 100;
+  max-height: 250px;
+  overflow-y: auto;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform-origin: top;
+}
+
+#workflow-dropdown-list.hidden {
+  display: none;
+}
+
+.workflow-option-item {
+  padding: 12px 20px;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  color: #000000;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workflow-option-item:hover {
+  background-color: #faf6f0;
+}
+
+.workflow-option-item.active-option {
+  font-weight: 600;
+  background-color: #faf6f0;
+}
+
+/* Dropdown active highlight state */
+.workflow-active #workflow-select-wrapper {
+  border-color: var(--active-workflow-color);
+  box-shadow: 0px 2px 8.15px var(--active-workflow-glow-color);
+}
+
+.workflow-active #workflow-selected-option {
+  color: var(--active-workflow-color);
+}
+
+.workflow-active #workflow-select-arrow {
+  color: var(--active-workflow-color);
+}
+
+/* --- Backdrop Dimming for Custom Dropdown --- */
+#workflow-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.15); /* subtle dimming */
+  z-index: 90;
+  transition: opacity 0.3s ease;
+}
+
+#workflow-backdrop.hidden {
+  display: none;
+}
+
+/* Position wrapper above backdrop */
+#workflow-select-wrapper {
+  z-index: 100;
+}
+
+/* --- Interactive Canvas Viewport --- */
+#canvas {
+  width: 100%;
+  max-width: 800px;
+  border: 1px dashed rgba(0, 0, 0, 0.35);
+  border-radius: 25px;
+  padding: 20px 25px 20px 20px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  position: relative;
+  overflow: hidden !important;
+}
+
+/* --- Static Core Infrastructure Header --- */
+#infra-header {
   display: flex;
-  gap: 6px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-.badge-icon {
+#infra-text {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.7);
+  text-align: right;
+  max-width: 250px;
+  line-height: 1.3;
+  margin: 0;
+}
+
+#infra-icons {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.infra-icon-wrapper {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #555555;
 }
 
-/* --- Interactive Canvas --- */
-#canvas {
+.infra-icon-wrapper img {
   width: 100%;
-  height: auto;
-  overflow: visible;
-  position: relative;
-  margin-top: 20px; /* offset to clear core-infra-badge on desktop */
+  height: 100%;
+  object-fit: contain;
 }
 
+/* Specific border for cloudflare wrapper matching figma */
+.infra-icon-wrapper[title="Cloudflare"] {
+  border: 1px solid #000000;
+  padding: 5px;
+}
+
+/* --- Stack Wrapper --- */
 #stack-wrapper {
   position: relative;
+  z-index: 2;
   width: 100%;
-  max-width: 700px; /* Figma Canvas Content Width */
-  margin: 0 auto;
-  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Figma vertical gap between rows */
+  gap: 28px; /* Spaced layers matching Figma */
 }
 
-/* --- Side-by-Side Layer Layout --- */
+
+/* --- Layer Structures --- */
 .layer-row {
   display: flex;
-  justify-content: space-between;
-  gap: 40px; /* Figma gap between left and right side */
-  width: 100%;
   align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  width: 100%;
   position: relative;
 }
 
-.layer-info {
-  flex: 0 0 200px; /* Figma exact text column width */
+/* Left textbox description */
+.layer-textbox {
+  flex: 0 0 240px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  text-align: left;
 }
 
 .layer-title {
   font-family: var(--font-serif);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
 }
 
-.layer-description {
+.layer-desc {
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
+  color: rgba(0, 0, 0, 0.7);
   line-height: 1.4;
-  color: var(--text-muted);
-  margin: 0;
 }
 
-.layer-box {
-  flex: 0 0 420px; /* Figma exact container width */
-  background-color: transparent;
-  border: 1.5px dashed rgba(0, 0, 0, 0.15);
+/* Right dashed box layer */
+.layer-container {
+  flex: 1;
+  border: 1px dashed rgba(0, 0, 0, 0.4);
   border-radius: 20px;
-  padding: 20px;
+  padding: 10px 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  min-height: 109px; /* Figma exact container height */
-  transition: border-color var(--transition-speed) ease;
-}
-
-.nodes-area {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px; /* Figma exact gap between nodes */
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-/* --- Nodes Styling --- */
-.node {
+  gap: 15px;
+  background-color: transparent;
+  transition: all var(--transition-speed) ease;
   position: relative;
   z-index: 2;
+  min-height: 75px;
+}
+
+.layer-container.dotted-border {
+  border-style: dotted !important;
+}
+
+/* --- Standard Circle Nodes --- */
+.node {
+  position: relative;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px; /* Figma space between icon and text */
-  width: 48px; /* Figma exact node width */
+  gap: 3px;
+  width: 85px;
   cursor: pointer;
   user-select: none;
   transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
 }
 
 .node-icon {
-  width: 48px; /* Figma exact node icon boundary */
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: #faf6f0;
-  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.25);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -336,82 +425,192 @@ body {
 }
 
 .node-icon img {
-  width: 30px; /* Figma exact inner icon width */
-  height: 30px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
-  transition: filter var(--transition-speed) ease;
 }
 
 .node-label {
   font-family: var(--font-sans);
   font-size: 11px;
   font-weight: 400;
-  color: var(--text-muted);
+  color: #000000;
   text-align: center;
   width: 100%;
   word-wrap: break-word;
   transition: all var(--transition-speed) ease;
+  /* Align text and ⓘ icon on the same baseline */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex-wrap: wrap;
 }
 
-/* --- Selection / Active States --- */
-.active-selection .node {
-  opacity: 0.35;
+/* Keep the SVG connection lines below the node stacking context */
+#connections-svg {
+  z-index: 0 !important;
 }
 
-.active-selection .node .node-icon {
-  filter: grayscale(100%);
-  opacity: 0.45;
-  background-color: #faf6f0;
-  border-color: rgba(0,0,0,0.1);
+
+/* --- Active Selection / Highlight Themes --- */
+
+/* Fading unselected nodes when a workflow is active or a node is clicked */
+.active-state .node {
+  opacity: 0.4;
 }
 
-.active-selection .node .node-label {
-  color: #888888;
+/* Active Highlighted Node in Workflow Path */
+.active-state .node.active-path-node {
+  opacity: 1;
 }
 
-/* Active Highlight Node */
-.active-selection .node.state-active {
-  opacity: 1 !important;
+.active-state .node.active-path-node .node-icon {
+  background-color: var(--workflow-bg-color);
+  border: 3px solid var(--workflow-color);
+  box-shadow: 3px -3px 8.6px var(--workflow-glow-color);
+}
+
+.active-state .node.active-path-node .node-label {
+  color: var(--workflow-color);
+  font-weight: 700;
+}
+
+/* Node that is directly clicked/selected (has a strong glow or distinct border) */
+.active-state .node.selected-node {
+  opacity: 1;
   transform: scale(1.05);
 }
 
-.active-selection .node.state-active .node-icon {
-  border-width: 3px;
-  border-color: var(--workflow-color) !important;
-  box-shadow: 0px 0px 15px var(--workflow-glow-color) !important;
-  background-color: #ffffff;
-  filter: none !important;
-  opacity: 1 !important;
+.active-state .node.selected-node .node-icon {
+  border: 3px solid #000000;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
 }
 
-.active-selection .node.state-active .node-label {
-  color: var(--workflow-color) !important;
+.active-state .node.selected-node .node-label {
   font-weight: 700;
 }
 
-/* Connective States (Highlighted paths) */
-.active-selection .node.state-connected {
-  opacity: 1 !important;
+/* --- Tooltip focus dimming --- */
+/* When a tooltip is pinned, fade everything except the source node */
+#canvas.tooltip-pinned .node:not(.tooltip-source) {
+  opacity: 0.15;
+  transition: opacity 0.25s ease;
 }
 
-.active-selection .node.state-connected .node-icon {
-  border-width: 3px;
-  border-color: var(--workflow-color) !important;
-  box-shadow: 0px 0px 15px var(--workflow-glow-color) !important;
+#canvas.tooltip-pinned .node.tooltip-source {
+  opacity: 1;
+  transform: scale(1.06);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#canvas.tooltip-pinned .layer-textbox {
+  opacity: 0.15;
+  transition: opacity 0.25s ease;
+}
+
+#canvas.tooltip-pinned #infra-text {
+  opacity: 0.15;
+  transition: opacity 0.25s ease;
+}
+
+#canvas.tooltip-pinned .infra-icon-wrapper:not(.tooltip-source) {
+  opacity: 0.15;
+  transition: opacity 0.25s ease;
+}
+
+#canvas.tooltip-pinned .infra-icon-wrapper.tooltip-source {
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+
+/* --- Floating Node Tooltip --- */
+#node-tooltip {
+  position: fixed;
+  z-index: 9999;
   background-color: #ffffff;
-  filter: none !important;
-  opacity: 1 !important;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  padding: 16px 18px;
+  width: 220px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.13), 0 2px 8px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.18s ease;
 }
 
-.active-selection .node.state-connected .node-label {
-  color: var(--workflow-color) !important;
-  font-weight: 700;
+#node-tooltip.hidden {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
 }
 
-/* Hover effects for interactive feedback */
-.node:hover:not(.state-active) .node-icon {
-  transform: translateY(-2px);
-  border-color: rgba(0, 0, 0, 0.4);
+#tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  padding-bottom: 10px;
+}
+
+#tooltip-icon-container {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fbfbfb;
+  flex-shrink: 0;
+}
+
+#tooltip-icon-container img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+#tooltip-title {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 600;
+  color: #000000;
+  line-height: 1.3;
+}
+
+#tooltip-desc {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Info icon button on node labels */
+.node-info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 3px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.35);
+  font-size: 10px;
+  line-height: 1;
+  vertical-align: middle;
+  transition: color 0.15s ease;
+  pointer-events: all;
+}
+
+.node-info-btn:hover,
+.node-info-btn.active {
+  color: rgba(0, 0, 0, 0.75);
 }
 
 /* --- Fullscreen Mode --- */
@@ -420,9 +619,7 @@ body {
   height: 100vh;
   max-width: none;
   border-radius: 0;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
+  padding: 0;
   background-color: #ffffff;
 }
 
@@ -431,163 +628,194 @@ body {
 }
 
 #visualisation-wrapper:fullscreen #canvas-container {
-  margin: 0;
   border-radius: 0;
-  flex-grow: 1;
 }
 
-/* Webkit Fullscreen Override */
-#visualisation-wrapper:-webkit-full-screen {
-  width: 100vw;
-  height: 100vh;
-  max-width: none;
-  border-radius: 0;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  background-color: #ffffff;
-}
-
-#visualisation-wrapper:-webkit-full-screen #navbar {
-  padding: 15px 30px;
-}
-
-#visualisation-wrapper:-webkit-full-screen #canvas-container {
-  margin: 0;
-  border-radius: 0;
-  flex-grow: 1;
-}
-
-/* Scrollbars */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: var(--bg-canvas);
 }
-
 ::-webkit-scrollbar-thumb {
   background: #c8c0b5;
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #b0a79b;
 }
 
-/* --- Mobile Responsive Layout --- */
-@media (max-width: 768px) {
-  html, body {
-    height: 100%;
-    overflow: auto;
-  }
-
-  body {
-    align-items: flex-start;
-  }
-
+/* --- Mobile View --- */
+@media (max-width: 480px) {
   #app {
-    height: auto;
-    max-height: none;
+    padding: 0 !important;
   }
-
-  #visualisation-wrapper {
-    border-radius: 12px;
-    width: calc(100vw - 2px);
-    height: auto;
-    max-height: none;
-    margin: 1px;
-  }
-
   #canvas-container {
-    padding: 24px 12px 32px 12px;
-    margin: 0 10px 10px 10px;
-    border-radius: 16px;
+    padding: 10px 8px;
+  }
+  #canvas {
+    padding: 10px 15px 10px 10px;
+    border-radius: 15px;
+  }
+  .layer-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  .layer-textbox {
+    flex: 1;
+    min-width: 80px;
+    max-width: 50%;
+    gap: 3px;
+  }
+  .layer-title {
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .layer-desc {
+    font-size: 9px;
+    line-height: 1.25;
+  }
+  .layer-container {
+    flex: 1;
+    max-width: 50%;
+    min-height: 50px;
+    padding: 4px 6px;
+    gap: 5px;
+    border-radius: 10px;
+  }
+  .node {
+    width: 42px;
+    gap: 2px;
+  }
+  .node-icon {
+    width: 24px;
+    height: 24px;
+  }
+  .node-icon img {
+    width: 12px;
+    height: 12px;
+  }
+  .node-label {
+    font-size: 7px;
+    line-height: 1.1;
+  }
+  .node-info-btn {
+    display: none;
   }
 
-  #core-infra-badge {
-    position: static;
-    margin: 0 auto 20px auto;
-    text-align: center;
+  /* Active Highlights inside mobile */
+  .active-state .node.active-path-node .node-icon {
+    border-width: 1.5px;
+  }
+  .active-state .node.selected-node .node-icon {
+    border-width: 1.5px;
+  }
+
+  #infra-header {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  #infra-text {
+    text-align: right;
+    font-size: 9px;
+    max-width: 160px;
+    line-height: 1.2;
+  }
+  .infra-icon-wrapper {
+    width: 18px;
+    height: 18px;
+  }
+  .infra-icon-wrapper[title="Cloudflare"] {
+    padding: 2px;
+  }
+
+}
+
+/* --- Tablet View --- */
+@media (min-width: 481px) and (max-width: 768px) {
+  #app {
+    padding: 0 !important;
+  }
+  #canvas {
+    padding: 20px 25px 20px 20px;
+  }
+  .layer-textbox {
+    flex: 0 0 170px;
+    gap: 4px;
+  }
+  .layer-title {
+    font-size: 12px;
+  }
+  .layer-desc {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+  .layer-container {
+    padding: 8px 10px;
+    gap: 10px;
+    flex-wrap: wrap;       /* allow nodes to wrap to a second row */
     justify-content: center;
   }
-
-  #canvas {
-    margin-top: 0;
-  }
-
-  #stack-wrapper {
-    gap: 40px; /* larger gap between stacked layers to accommodate arrows */
-    padding: 5px;
-  }
-
-  .layer-row {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .layer-info {
-    flex: 1 0 auto;
-    text-align: center;
-    width: 100%;
-    align-items: center;
-  }
-
-  .layer-title {
-    font-size: 16px;
-  }
-
-  .layer-description {
-    font-size: 12px;
-    max-width: 450px;
-  }
-
-  .layer-box {
-    width: 100%;
-    flex: 1 0 auto;
-    padding: 16px;
-    min-height: 80px;
-  }
-
-  #navbar {
-    min-height: 56px;
-    padding: 12px 16px;
-  }
-
-  #diagram-title {
-    font-size: 18px;
-  }
-
-  #fullscreen-btn {
-    width: 44px;
-    height: 36px;
-    border-radius: 8px;
-  }
-
-  #fullscreen-btn img {
-    width: 20px;
-    height: 20px;
-  }
-
-  /* Nodes increased size on mobile as per requirement */
   .node {
-    width: 62px;
+    width: 60px;
+    gap: 3px;
   }
-
   .node-icon {
-    width: 46px;
-    height: 46px;
+    width: 32px;
+    height: 32px;
   }
-
   .node-icon img {
-    width: 23px;
-    height: 23px;
+    width: 16px;
+    height: 16px;
   }
-
   .node-label {
-    font-size: 12px;
+    font-size: 9px;
+    line-height: 1.15;
+  }
+  .node-info-btn {
+    display: none;
+  }
+}
+
+/* Narrow tablet sub-breakpoint: tighten textbox further so container has more room */
+@media (min-width: 481px) and (max-width: 580px) {
+  .layer-row {
+    gap: 12px;
+  }
+  .layer-textbox {
+    flex: 0 0 130px;
+    min-width: 0;
+  }
+  .layer-title {
+    font-size: 11px;
+  }
+  .layer-desc {
+    font-size: 9px;
+    line-height: 1.2;
+  }
+  .layer-container {
+    gap: 8px;
+    padding: 6px 8px;
+  }
+  .node {
+    width: 54px;
+    gap: 2px;
+  }
+  .node-icon {
+    width: 28px;
+    height: 28px;
+  }
+  .node-icon img {
+    width: 14px;
+    height: 14px;
+  }
+  .node-label {
+    font-size: 8px;
   }
 }

@@ -1,25 +1,19 @@
-Type,ID,Name,Description,Icon,LayerID,Order,Color,WorkflowNodes
-layer,discovery,Discovery,"Platforms through which people can find the services that nudify or generate sexual scenes.",,,,
-layer,interfaces,Interfaces,"Telegram bots, websites, and apps used to interact with the generation models.",,,,
-layer,model_serving,Model Serving,"Services and compute resources hosting and executing the model inference.",,,,
-layer,model_hosting,Model Hosting,"Code repositories and model weight storage platforms.",,,,
-layer,ml_models,ML Models,"Fine-tuned model checkpoints and styles used for generation.",,,,
-node,telegram_channel,Telegram,,assets/telegram.png,discovery,,,
-node,discord_groups,Discord,,assets/discord.png,discovery,,,
-node,social_media,Social Media,,assets/social_media.svg,discovery,,,
-node,play_store,Play Store,,assets/play_store.svg,discovery,,,
-node,telegram_bots,Telegram Bots,,assets/telegram.png,interfaces,,,
-node,nudeify_apps,Nudeify Apps,,assets/nudeify_apps.svg,interfaces,,,
-node,nudeify_websites,Nudeify Websites,,assets/nudeify_websites.svg,interfaces,,,
-node,discord_groups_interface,Discord Groups,,assets/discord.png,interfaces,,,
-node,civit_ai,Civit AI,,assets/civit_ai.svg,model_serving,,,
-node,hugging_face,Hugging Face,,assets/hugging_face.svg,model_serving,,,
-node,undress_ai,UndressAI,,assets/undress_ai.svg,model_serving,,,
-node,grok,Grok,,assets/grok.svg,model_serving,,,
-node,github_apis,GitHub APIs,,assets/github_apis.svg,model_hosting,,,
-node,midjourney,MidJourney,,assets/midjourney.svg,model_hosting,,,
-node,ml_models_node,Machine Learning models,,assets/ml_models_node.svg,ml_models,,,
-workflow,telegram_nude,Someone making a Nude on telegram,,,,,#bc0000,telegram_channel;telegram_bots;undress_ai;github_apis;ml_models_node
-workflow,discord_community,Discord community generation flow,,,,,#5865F2,discord_groups;discord_groups_interface;civit_ai;midjourney;ml_models_node
-workflow,android_app,Android app undressing flow,,,,,#1abc9c,play_store;nudeify_apps;grok;github_apis;ml_models_node
-workflow,web_browser,Web browser-based nudeify generation,,,,,#e67e22,social_media;nudeify_websites;hugging_face;github_apis;ml_models_node
+NodeID,NodeName,Icon,LayerID,LayerName,LayerOrder,Description
+google_search,Google Search,assets/google_search.svg,discovery,Search and Discovery Channels,1,"Users search terms like 'undress AI' or 'nudify photo' on Google to find active generation services and app listings."
+google_play_store,Google Play Store search,assets/play_store.svg,discovery,Search and Discovery Channels,1,"Users browse app stores for nudification tools, often listed under generic AI photo-editing or avatar generator categories."
+instagram_feed,Instagram Feed,assets/social_media.svg,discovery,Search and Discovery Channels,1,"Targeted ads and influencer posts direct users to generation services through curated social media content and referral links."
+chatgpt_llms,ChatGPT/LLMs,assets/chatgpt_llms.svg,discovery,Search and Discovery Channels,1,"Users query AI chatbots for prompt ideas, tool recommendations, and direct links to active nudification networks."
+telegram_bot,Telegram Bot,assets/telegram.png,gui,Graphical User Interface,2,"Bot accounts receive image uploads and text prompts via Telegram chat, returning AI-generated outputs directly in the conversation."
+smartphone_app,Smartphone App,assets/nudeify_apps.svg,gui,Graphical User Interface,2,"Native Android and iOS applications providing a dedicated UI for submitting images and receiving AI-generated results on-device."
+web_apps,Web Apps,assets/nudeify_websites.svg,gui,Graphical User Interface,2,"Browser-based dashboards with upload forms and prompt fields that route generation requests to cloud inference backends."
+discord_bot,Discord Bot,assets/discord.png,gui,Graphical User Interface,2,"Slash-command bots embedded in Discord servers that queue generation jobs and return AI outputs directly within channels."
+huggingface,HuggingFace,assets/hugging_face.svg,model_access,Model Access Providers,3,"Open-source platform hosting model weights and inference APIs, enabling direct download and deployment of generation pipelines."
+github,GitHub,assets/github_apis.svg,model_access,Model Access Providers,3,"Public repositories containing model-serving scripts, LoRA training code, and API wrapper implementations for generation services."
+civitai,CivitAI,assets/civit_ai.svg,model_access,Model Access Providers,3,"Community platform for sharing fine-tuned checkpoints and LoRA weights, with monetary rewards for popular or high-demand models."
+rest_api,REST API,assets/undress_ai.svg,model_access,Model Access Providers,3,"HTTP endpoints that accept image and prompt inputs, route requests to GPU inference backends, and return generated outputs."
+finetune_lora,Finetune Layer (LoRA),assets/ml_models_node.svg,ml_models,Machine Learning Models,4,"Lightweight adapter layers trained on targeted datasets that specialise a base model for generating explicit or personalised imagery."
+foundational_model,Foundational Model,assets/ml_models_node.svg,ml_models,Machine Learning Models,4,"Large pre-trained diffusion or GAN models providing the generative base for all downstream fine-tuning and inference tasks."
+personal_media,Personal social media photographs/videos,assets/social_media.svg,datasets,Datasets,5,"Personal images and videos scraped from social platforms without consent and used to train or personalise generation models."
+porn_videos,Porn Videos,assets/porn_videos.svg,datasets,Datasets,5,"Explicit video datasets scraped from adult sites and used to train models on anatomy, lighting, and sexual pose variation."
+laion_5b,LAION-5B,assets/laion_5b.svg,datasets,Datasets,5,"A public dataset of 5 billion image-text pairs widely used to pre-train foundational vision-language and diffusion models."
+youtube_videos,YouTube videos,assets/youtube_videos.svg,datasets,Datasets,5,"Publicly available videos scraped and annotated to teach models human motion, body pose variation, and scene composition."
