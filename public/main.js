@@ -1,14 +1,12 @@
 // --- State Variables ---
+let layersData = [];
 let nodesData = [];
-let selectedNodeId = null;
-
-// No drag/pan variables needed
+let workflowsData = [];
+let selectedWorkflowId = null;
 
 // Cache DOM Elements
 const canvas = document.getElementById('canvas');
 const stackWrapper = document.getElementById('stack-wrapper');
-const detailTitle = document.getElementById('detail-title');
-const detailDesc = document.getElementById('detail-desc');
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 
 // --- Helper Functions ---
@@ -53,12 +51,14 @@ function parseCSVLine(line) {
   return result;
 }
 
-// Custom CSV Parser to read the nodes, layers, and connections
+// Custom CSV Parser to read the nodes, layers, and workflows
 function parseDataCSV(content) {
   const lines = content.split(/\r?\n/);
+  const layers = [];
   const nodes = [];
+  const workflows = [];
   
-  if (lines.length === 0) return nodes;
+  if (lines.length === 0) return { layers, nodes, workflows };
   
   const headers = parseCSVLine(lines[0]);
   
@@ -75,48 +75,61 @@ function parseDataCSV(content) {
       }
     });
     
-    if (row.NodeID) {
-      nodes.push({
-        id: row.NodeID,
-        name: row.NodeName || '',
-        layerId: row.LayerID || '',
-        layerName: row.LayerName || '',
-        layerOrder: parseInt(row.LayerOrder, 10) || 0,
-        layerRow: parseInt(row.LayerRow, 10) || 0,
-        layerWidth: row.LayerWidth || 'full',
-        sublayerName: row.SublayerName || '',
-        isSublayerNode: row.IsSublayerNode === 'true',
-        icon: row.Icon || '',
+    const type = (row.Type || '').toLowerCase();
+    if (type === 'layer') {
+      layers.push({
+        id: row.ID,
+        name: row.Name,
         description: row.Description || '',
-        activeColor: row.ActiveColor || '#bc0000',
-        connections: row.Connections ? row.Connections.split(';').map(c => c.trim()).filter(Boolean) : []
+        order: parseInt(row.Order, 10) || 0
+      });
+    } else if (type === 'node') {
+      nodes.push({
+        id: row.ID,
+        name: row.Name,
+        icon: row.Icon || 'none',
+        layerId: row.LayerID
+      });
+    } else if (type === 'workflow') {
+      workflows.push({
+        id: row.ID,
+        name: row.Name,
+        color: row.Color || '#bc0000',
+        nodes: row.WorkflowNodes ? row.WorkflowNodes.split(';').map(n => n.trim()).filter(Boolean) : []
       });
     }
   }
   
-  nodes.sort((a, b) => {
-    if (a.layerOrder !== b.layerOrder) {
-      return a.layerOrder - b.layerOrder;
-    }
-    return a.id.localeCompare(b.id, undefined, { numeric: true, sensitivity: 'base' });
-  });
+  // Sort layers by Order
+  layers.sort((a, b) => a.order - b.order);
   
-  return nodes;
+  return { layers, nodes, workflows };
 }
 
-// Fetch and load standard CSV nodes representation
+// Fetch and load CSV nodes representation
 async function init() {
   try {
     const response = await fetch('data.csv');
     const csvText = await response.text();
-    nodesData = parseDataCSV(csvText);
+    const parsed = parseDataCSV(csvText);
+    
+    layersData = parsed.layers;
+    nodesData = parsed.nodes;
+    workflowsData = parsed.workflows;
+    
     renderStack();
-    // Draw connection lines on initial load
-    drawLines();
+    populateWorkflowSelector();
+    
+    // Select the first workflow by default
+    if (workflowsData.length > 0) {
+      selectWorkflow(workflowsData[0].id);
+    } else {
+      drawLines();
+    }
   } catch (error) {
     console.error('Error loading visualisation data:', error);
-    detailTitle.textContent = 'Error Loading Data';
-    detailDesc.textContent = 'Please make sure data.csv is accessible in the public directory.';
+    const title = document.getElementById('diagram-title');
+    if (title) title.textContent = 'Error Loading Data';
   }
 }
 
@@ -143,142 +156,111 @@ function createNodeEl(node) {
   el.appendChild(iconWrapper);
   el.appendChild(label);
   
-  // Custom highlight theme overrides
-  el.style.setProperty('--node-color', node.activeColor);
-  el.style.setProperty('--node-glow-color', hexToRgbA(node.activeColor, 0.25));
-  el.style.setProperty('--node-glow-color-soft', hexToRgbA(node.activeColor, 0.12));
-  
-  el.addEventListener('click', (e) => {
-    e.stopPropagation();
-    selectNode(node.id);
-  });
-  
-  return el;
-}
-
-// Build sublayer nodes (e.g., Value Addons pill nodes)
-function createSublayerNodeEl(node) {
-  const el = document.createElement('div');
-  el.className = 'sublayer-node';
-  el.dataset.nodeId = node.id;
-  
-  const label = document.createElement('div');
-  label.className = 'sublayer-node-label';
-  label.textContent = node.name;
-  
-  el.appendChild(label);
-  
-  // Custom highlight theme overrides
-  el.style.setProperty('--node-color', node.activeColor);
-  el.style.setProperty('--node-glow-color', hexToRgbA(node.activeColor, 0.25));
-  el.style.setProperty('--node-glow-color-soft', hexToRgbA(node.activeColor, 0.12));
-  
-  el.addEventListener('click', (e) => {
-    e.stopPropagation();
-    selectNode(node.id);
-  });
-  
   return el;
 }
 
 // Assemble diagram dynamically from CSV nodes
 function renderStack() {
+  if (!stackWrapper) return;
   stackWrapper.innerHTML = '';
   
-  // 1. Group nodes by layer
-  const layers = {};
-  nodesData.forEach(node => {
-    if (!layers[node.layerId]) {
-      layers[node.layerId] = {
-        id: node.layerId,
-        name: node.layerName,
-        order: node.layerOrder,
-        row: node.layerRow,
-        width: node.layerWidth,
-        sublayerName: node.sublayerName,
-        standardNodes: [],
-        sublayerNodes: []
-      };
-    }
-    if (node.isSublayerNode) {
-      layers[node.layerId].sublayerNodes.push(node);
-    } else {
-      layers[node.layerId].standardNodes.push(node);
-    }
-  });
-  
-  // 2. Group layers by row
-  const rows = {};
-  Object.values(layers).forEach(layer => {
-    if (!rows[layer.row]) {
-      rows[layer.row] = [];
-    }
-    rows[layer.row].push(layer);
-  });
-  
-  // Sort layers inside each row by order
-  Object.keys(rows).forEach(rowNum => {
-    rows[rowNum].sort((a, b) => a.order - b.order);
-  });
-  
-  // 3. Render rows sequentially
-  const sortedRowNumbers = Object.keys(rows).map(Number).sort((a, b) => a - b);
-  sortedRowNumbers.forEach(rowNum => {
-    const rowLayers = rows[rowNum];
+  layersData.forEach(layer => {
     const rowEl = document.createElement('div');
     rowEl.className = 'layer-row';
+    rowEl.dataset.layerId = layer.id;
     
-    rowLayers.forEach(layer => {
-      const layerEl = document.createElement('div');
-      layerEl.className = `layer width-${layer.width}`;
-      layerEl.dataset.layerId = layer.id;
-      
-      const titleEl = document.createElement('div');
-      titleEl.className = 'layer-name';
-      titleEl.textContent = layer.name;
-      layerEl.appendChild(titleEl);
-      
-      const contentEl = document.createElement('div');
-      contentEl.className = 'layer-content';
-      
-      // Render standard nodes area
-      const nodesAreaEl = document.createElement('div');
-      nodesAreaEl.className = 'nodes-area';
-      layer.standardNodes.forEach(node => {
-        const nodeEl = createNodeEl(node);
-        nodesAreaEl.appendChild(nodeEl);
-      });
-      contentEl.appendChild(nodesAreaEl);
-      
-      // Render sublayer (Value Addons) if exists
-      if (layer.sublayerName && layer.sublayerName !== '') {
-        contentEl.classList.add('has-sublayer');
-        
-        const sublayerBoxEl = document.createElement('div');
-        sublayerBoxEl.className = 'sublayer-box';
-        
-        const subTitleEl = document.createElement('div');
-        subTitleEl.className = 'sublayer-title';
-        subTitleEl.textContent = layer.sublayerName;
-        sublayerBoxEl.appendChild(subTitleEl);
-        
-        const subNodesEl = document.createElement('div');
-        subNodesEl.className = 'sublayer-nodes';
-        layer.sublayerNodes.forEach(node => {
-          const nodeEl = createSublayerNodeEl(node);
-          subNodesEl.appendChild(nodeEl);
-        });
-        sublayerBoxEl.appendChild(subNodesEl);
-        
-        contentEl.appendChild(sublayerBoxEl);
-      }
-      
-      layerEl.appendChild(contentEl);
-      rowEl.appendChild(layerEl);
+    // Left column: Info
+    const infoEl = document.createElement('div');
+    infoEl.className = 'layer-info';
+    
+    const titleEl = document.createElement('h3');
+    titleEl.className = 'layer-title';
+    titleEl.textContent = layer.name;
+    
+    const descEl = document.createElement('p');
+    descEl.className = 'layer-description';
+    descEl.textContent = layer.description;
+    
+    infoEl.appendChild(titleEl);
+    infoEl.appendChild(descEl);
+    rowEl.appendChild(infoEl);
+    
+    // Right column: Box containing nodes
+    const boxEl = document.createElement('div');
+    boxEl.className = 'layer-box';
+    
+    const nodesAreaEl = document.createElement('div');
+    nodesAreaEl.className = 'nodes-area';
+    
+    // Find nodes belonging to this layer
+    const layerNodes = nodesData.filter(n => n.layerId === layer.id);
+    layerNodes.forEach(node => {
+      const nodeEl = createNodeEl(node);
+      nodesAreaEl.appendChild(nodeEl);
     });
+    
+    boxEl.appendChild(nodesAreaEl);
+    rowEl.appendChild(boxEl);
     
     stackWrapper.appendChild(rowEl);
   });
+}
+
+// Populate workflow dropdown selector options
+function populateWorkflowSelector() {
+  const select = document.getElementById('workflow-select');
+  if (!select) return;
+  
+  select.innerHTML = '';
+  
+  workflowsData.forEach(wf => {
+    const option = document.createElement('option');
+    option.value = wf.id;
+    option.textContent = wf.name;
+    select.appendChild(option);
+  });
+  
+  select.addEventListener('change', (e) => {
+    selectWorkflow(e.target.value);
+  });
+}
+
+// Highlight the selected workflow path
+function selectWorkflow(workflowId) {
+  selectedWorkflowId = workflowId;
+  const wf = workflowsData.find(w => w.id === workflowId);
+  if (!wf) return;
+  
+  // Update theme colors on root visualisation-wrapper
+  const wrapper = document.getElementById('visualisation-wrapper');
+  if (wrapper) {
+    wrapper.style.setProperty('--workflow-color', wf.color);
+    wrapper.style.setProperty('--workflow-glow-color', hexToRgbA(wf.color, 0.25));
+  }
+  
+  // Sync the dropdown menu value
+  const select = document.getElementById('workflow-select');
+  if (select && select.value !== workflowId) {
+    select.value = workflowId;
+  }
+  
+  // Highlight active nodes
+  if (stackWrapper) {
+    stackWrapper.classList.add('active-selection');
+  }
+  
+  const allNodeElements = document.querySelectorAll('[data-node-id]');
+  allNodeElements.forEach(el => {
+    const nodeId = el.dataset.nodeId;
+    el.classList.remove('state-active', 'state-connected');
+    
+    if (wf.nodes.includes(nodeId)) {
+      el.classList.add('state-active');
+    }
+  });
+  
+  // Redraw SVG connection lines
+  drawLines();
 }
 
 // --- SVG Connection Lines Drawer ---
@@ -287,91 +269,140 @@ function drawLines() {
   if (!svg) return;
   svg.innerHTML = '';
   
-  if (nodesData.length === 0) return;
-  
   const canvasRect = canvas.getBoundingClientRect();
   
-  // Helper to get center coordinate of a node relative to the canvas
-  function getCenter(el) {
-    const iconEl = el.querySelector('.node-icon') || el;
-    const rect = iconEl.getBoundingClientRect();
-    return {
-      x: (rect.left + rect.right) / 2 - canvasRect.left,
-      y: (rect.top + rect.bottom) / 2 - canvasRect.top
-    };
+  // 1. Set up arrow definition marker
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+  marker.setAttribute('id', 'arrow');
+  marker.setAttribute('viewBox', '0 0 10 10');
+  marker.setAttribute('refX', '7');
+  marker.setAttribute('refY', '5');
+  marker.setAttribute('markerWidth', '6');
+  marker.setAttribute('markerHeight', '6');
+  marker.setAttribute('orient', 'auto-start-reverse');
+  
+  const markerPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  markerPath.setAttribute('d', 'M 0 2.5 L 7 5 L 0 7.5 z');
+  markerPath.setAttribute('fill', '#bbbbbb');
+  marker.appendChild(markerPath);
+  defs.appendChild(marker);
+  svg.appendChild(defs);
+  
+  // 2. Draw static downward arrows between consecutive layer boxes
+  const boxes = Array.from(document.querySelectorAll('.layer-box'));
+  if (boxes.length >= 2) {
+    for (let i = 0; i < boxes.length - 1; i++) {
+      const boxA = boxes[i];
+      const boxB = boxes[i + 1];
+      
+      const rectA = boxA.getBoundingClientRect();
+      const rectB = boxB.getBoundingClientRect();
+      
+      const xA = (rectA.left + rectA.right) / 2 - canvasRect.left;
+      const xB = (rectB.left + rectB.right) / 2 - canvasRect.left;
+      const x = (xA + xB) / 2;
+      
+      const yStart = rectA.bottom - canvasRect.top;
+      const yEnd = rectB.top - canvasRect.top;
+      
+      if (yEnd > yStart) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x);
+        line.setAttribute('y1', yStart + 3);
+        line.setAttribute('x2', x);
+        line.setAttribute('y2', yEnd - 6);
+        line.setAttribute('stroke', '#bbbbbb');
+        line.setAttribute('stroke-width', '1.5');
+        line.setAttribute('marker-end', 'url(#arrow)');
+        svg.appendChild(line);
+      }
+    }
   }
   
-  // Cache all node element centers
-  const centers = {};
-  const allNodeElements = document.querySelectorAll('[data-node-id]');
-  allNodeElements.forEach(el => {
-    const id = el.dataset.nodeId;
-    centers[id] = getCenter(el);
-  });
-  
-  // Generate unique connection pairs to draw
-  const pairs = [];
-  const visited = new Set();
-  
-  nodesData.forEach(node => {
-    const fromId = node.id;
-    if (!centers[fromId]) return;
+  // 3. Draw static bypass arrow from Layer 1 to Layer 3 (right side loop)
+  if (boxes.length >= 3) {
+    const box1 = boxes[0];
+    const box3 = boxes[2];
     
-    node.connections.forEach(toId => {
-      if (!centers[toId]) return;
+    const rect1 = box1.getBoundingClientRect();
+    const rect3 = box3.getBoundingClientRect();
+    
+    const rightEdge1 = rect1.right - canvasRect.left;
+    const y1 = (rect1.top + rect1.bottom) / 2 - canvasRect.top;
+    
+    const rightEdge3 = rect3.right - canvasRect.left;
+    const y3 = (rect3.top + rect3.bottom) / 2 - canvasRect.top;
+    
+    const maxRight = Math.max(rightEdge1, rightEdge3);
+    const loopOffset = 25; // Loop offset to the right
+    const loopX = maxRight + loopOffset;
+    
+    const bypassPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const pathD = `M ${rightEdge1},${y1} ` +
+                  `L ${loopX - 8},${y1} ` +
+                  `Q ${loopX},${y1} ${loopX},${y1 + 8} ` +
+                  `L ${loopX},${y3 - 8} ` +
+                  `Q ${loopX},${y3} ${loopX - 8},${y3} ` +
+                  `L ${rightEdge3 + 6},${y3}`;
+    
+    bypassPath.setAttribute('d', pathD);
+    bypassPath.setAttribute('stroke', '#bbbbbb');
+    bypassPath.setAttribute('stroke-width', '1.5');
+    bypassPath.setAttribute('fill', 'none');
+    bypassPath.setAttribute('marker-end', 'url(#arrow)');
+    svg.appendChild(bypassPath);
+  }
+  
+  // 4. Draw dynamic workflow path (dotted, colored, animated)
+  if (selectedWorkflowId) {
+    const wf = workflowsData.find(w => w.id === selectedWorkflowId);
+    if (wf && wf.nodes.length >= 2) {
+      const points = [];
+      wf.nodes.forEach(nodeId => {
+        const nodeEl = document.querySelector(`[data-node-id="${nodeId}"]`);
+        if (nodeEl) {
+          const iconEl = nodeEl.querySelector('.node-icon') || nodeEl;
+          const rect = iconEl.getBoundingClientRect();
+          points.push({
+            x: (rect.left + rect.right) / 2 - canvasRect.left,
+            y: (rect.top + rect.bottom) / 2 - canvasRect.top
+          });
+        }
+      });
       
-      const key = [fromId, toId].sort().join('-');
-      if (!visited.has(key)) {
-        visited.add(key);
-        pairs.push({ from: fromId, to: toId });
-      }
-    });
-  });
-  
-  // Render SVG line elements
-  pairs.forEach(pair => {
-    const fromCenter = centers[pair.from];
-    const toCenter = centers[pair.to];
-    
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', fromCenter.x);
-    line.setAttribute('y1', fromCenter.y);
-    line.setAttribute('x2', toCenter.x);
-    line.setAttribute('y2', toCenter.y);
-    
-    if (selectedNodeId) {
-      const isActiveConnection = (pair.from === selectedNodeId || pair.to === selectedNodeId);
-      if (isActiveConnection) {
-        // Highlighted active connection
-        const activeNode = nodesData.find(n => n.id === selectedNodeId);
-        line.setAttribute('stroke', activeNode ? activeNode.activeColor : '#bc0000');
-        line.setAttribute('stroke-width', '2');
-        line.setAttribute('stroke-dasharray', '6,4');
-        line.setAttribute('opacity', '0.6');
+      if (points.length >= 2) {
+        const pathD = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x},${p.y}`).join(' ');
+        
+        // A. Glow Line (thick, semi-transparent)
+        const glowLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        glowLine.setAttribute('d', pathD);
+        glowLine.setAttribute('stroke', wf.color);
+        glowLine.setAttribute('stroke-width', '6');
+        glowLine.setAttribute('opacity', '0.18');
+        glowLine.setAttribute('fill', 'none');
+        svg.appendChild(glowLine);
+        
+        // B. Active Path Line (dotted & animated)
+        const pathLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathLine.setAttribute('d', pathD);
+        pathLine.setAttribute('stroke', wf.color);
+        pathLine.setAttribute('stroke-width', '2.5');
+        pathLine.setAttribute('stroke-dasharray', '6,4');
+        pathLine.setAttribute('fill', 'none');
         
         // Dash flow animation
         const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
         animate.setAttribute('attributeName', 'stroke-dashoffset');
         animate.setAttribute('values', '10;0');
-        animate.setAttribute('dur', '1s');
+        animate.setAttribute('dur', '1.2s');
         animate.setAttribute('repeatCount', 'indefinite');
-        line.appendChild(animate);
-      } else {
-        // Dimmed inactive connection
-        line.setAttribute('stroke', 'rgba(0, 0, 0, 0.02)');
-        line.setAttribute('stroke-width', '0.8');
-        line.setAttribute('opacity', '0.1');
+        pathLine.appendChild(animate);
+        
+        svg.appendChild(pathLine);
       }
-    } else {
-      // Default: light grey dotted lines
-      line.setAttribute('stroke', 'rgba(0, 0, 0, 0.15)');
-      line.setAttribute('stroke-width', '1');
-      line.setAttribute('stroke-dasharray', '3,4');
-      line.setAttribute('opacity', '0.45');
     }
-    
-    svg.appendChild(line);
-  });
+  }
 }
 
 // Observe canvas size changes to redraw connection lines automatically
@@ -381,69 +412,6 @@ const resizeObserver = new ResizeObserver(() => {
 if (canvas) {
   resizeObserver.observe(canvas);
 }
-
-// Click to select node, highlight relations, and update description
-function selectNode(nodeId) {
-  if (selectedNodeId === nodeId) {
-    clearSelection();
-    return;
-  }
-  
-  selectedNodeId = nodeId;
-  stackWrapper.classList.add('active-selection');
-  
-  const activeNode = nodesData.find(n => n.id === nodeId);
-  if (!activeNode) return;
-  
-  // Update detail box
-  detailTitle.textContent = activeNode.name;
-  detailDesc.textContent = activeNode.description;
-  
-  // Highlight connections
-  const allNodeElements = document.querySelectorAll('[data-node-id]');
-  allNodeElements.forEach(el => {
-    const elId = el.dataset.nodeId;
-    el.classList.remove('state-active', 'state-connected');
-    
-    if (elId === nodeId) {
-      el.classList.add('state-active');
-    } else {
-      const otherNode = nodesData.find(n => n.id === elId);
-      // Bidirectional connection resolve
-      const isConnected = activeNode.connections.includes(elId) || 
-                          (otherNode && otherNode.connections.includes(nodeId));
-      if (isConnected) {
-        el.classList.add('state-connected');
-      }
-    }
-  });
-  
-  // Redraw connection lines
-  drawLines();
-}
-
-// Clear selected states
-function clearSelection() {
-  selectedNodeId = null;
-  stackWrapper.classList.remove('active-selection');
-  
-  const allNodeElements = document.querySelectorAll('[data-node-id]');
-  allNodeElements.forEach(el => {
-    el.classList.remove('state-active', 'state-connected');
-  });
-  
-  // Clear highlights and reset lines to default style
-  drawLines();
-  
-  // Reset detail box
-  detailTitle.textContent = 'Select a service';
-  detailDesc.textContent = 'Click on any node in the stack diagram below to view technical details and highlight infrastructure flows.';
-}
-
-// Clicking canvas background clears selections
-canvas.addEventListener('click', () => {
-  clearSelection();
-});
 
 // --- Fullscreen Toggle Binder ---
 const wrapper = document.getElementById('visualisation-wrapper');
@@ -494,7 +462,6 @@ function handleFSChange() {
     fullscreenBtn.classList.remove('in-fullscreen');
     fullscreenBtn.title = "Toggle Full Screen";
   }
-  
 }
 
 // --- Initialize App ---

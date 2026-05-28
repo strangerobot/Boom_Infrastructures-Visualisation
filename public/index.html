@@ -14,11 +14,10 @@
     <!-- Visualisation wrapper that can go full screen -->
     <div id="visualisation-wrapper">
       
-      <!-- Top Navbar with Instruction and Full Screen Action -->
+      <!-- Top Navbar with Title and Full Screen Action -->
       <div id="navbar" data-node-id="24:136" data-name="Navbar">
         <div id="navbar-left" data-node-id="24:138">
-          <h2 id="detail-title" data-node-id="24:139">Select a service</h2>
-          <p id="detail-desc" data-node-id="24:140">Click on any node in the stack diagram below to view technical details and highlight infrastructure flows.</p>
+          <h2 id="diagram-title">Infrastructure Tech Stack</h2>
         </div>
         <button id="fullscreen-btn" aria-label="Toggle Full Screen" title="Toggle Full Screen" data-node-id="24:141">
           <div data-node-id="24:142" data-name="Full Screen">
@@ -29,7 +28,35 @@
 
       <!-- Tech Stack Canvas Container -->
       <div id="canvas-container">
-        <h1 id="canvas-title">The Tech Stack</h1>
+        <!-- Central Workflow Selector -->
+        <div id="workflow-selector-container">
+          <div id="workflow-selector-label">Select a workflow to learn how this infra is used</div>
+          <div class="custom-select-wrapper">
+            <select id="workflow-select">
+              <!-- Dynamically populated -->
+            </select>
+            <span class="custom-select-arrow"></span>
+          </div>
+        </div>
+        
+        <!-- Core Infrastructure Badge -->
+        <div id="core-infra-badge">
+          <span>Core infrastructure (cloudflare, DNS) providers enable all these layers</span>
+          <div class="badge-icons">
+            <div class="badge-icon cloudflare" title="Cloudflare">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.5 19A4.5 4.5 0 0 0 22 14.5c0-2-1.3-3.7-3.2-4.2A5.5 5.5 0 0 0 8.5 7a5 5 0 0 0-4 7.5A4.5 4.5 0 0 0 6.5 19z" />
+              </svg>
+            </div>
+            <div class="badge-icon dns" title="DNS">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+            </div>
+          </div>
+        </div>
         
         <!-- Scrollable stack canvas -->
         <div id="canvas">
