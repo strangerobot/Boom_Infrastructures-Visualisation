@@ -18,11 +18,19 @@
 html,
 body {
   height: auto !important;
-  min-height: 100% !important;
+  min-height: 100vh !important;
   margin: 0;
   padding: 0;
-  overflow: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
   background-color: transparent !important;
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;          /* Chrome/Safari/Opera */
 }
 
 body {
@@ -43,7 +51,8 @@ body {
   justify-content: center;
   align-items: flex-start;
   padding: 0 !important;
-  overflow: visible !important;
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
 }
 
 #visualisation-wrapper {
@@ -52,12 +61,19 @@ body {
   border-radius: 25px !important;
   width: calc(100% - 8px);
   margin: 4px auto;
-  height: 100vh;
+  height: auto !important;
   min-height: calc(100vh - 8px) !important;
   display: flex;
   flex-direction: column;
-  overflow: visible !important;
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
   position: relative;
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+#visualisation-wrapper::-webkit-scrollbar {
+  display: none;          /* Chrome/Safari/Opera */
 }
 
 /* --- Top Navbar --- */
