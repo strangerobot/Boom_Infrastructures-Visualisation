@@ -17,7 +17,7 @@ finetune_lora,Finetune (LoRA),assets/finetune_lora.svg,ml_models,Machine Learnin
 stable_diffusion,Stable Diffusion,assets/stable_diffusion.svg,ml_models,Machine Learning Models,4,"Open-weights latent diffusion models (e.g., SD 1.5, SDXL) widely used as baseline frameworks for custom explicit fine-tunes and LoRAs."
 flux,Flux,assets/flux.svg,ml_models,Machine Learning Models,4,"A state-of-the-art flow-matching model (Flux.1) by Black Forest Labs, frequently run on high-end GPUs for detailed anatomy and photorealistic outputs."
 wan_2_2,Wan2.2,assets/wan_2_2.svg,ml_models,Machine Learning Models,4,"An open-source generative model series (Wan2.1/2.2) by Alibaba, adapted by developers to generate realistic human motion and high-quality explicit video clips."
-grok,Grok,assets/grok.svg,ml_models,Machine Learning Models,4,"State-of-the-art open-weights model developed by xAI, used for text and image understanding, and generating synthetic outputs."
+grok,Grok,assets/grok_model.svg,ml_models,Machine Learning Models,4,"State-of-the-art open-weights model developed by xAI, used for text and image understanding, and generating synthetic outputs."
 personal_media,Personal data from Social Media,assets/social_media.svg,datasets,Datasets,5,"Personal images and videos scraped from social platforms without consent and used to train or personalise generation models."
 porn_videos,Porn Videos,assets/porn_videos.svg,datasets,Datasets,5,"Explicit video datasets scraped from adult sites and used to train models on anatomy, lighting, and sexual pose variation."
 laion_5b,LAION-5B,assets/laion_5b.svg,datasets,Datasets,5,"A public dataset of 5 billion image-text pairs widely used to pre-train foundational vision-language and diffusion models."
