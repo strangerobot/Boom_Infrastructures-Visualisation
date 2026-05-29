@@ -24,13 +24,16 @@ body {
   overflow-y: auto !important;
   overflow-x: hidden !important;
   background-color: transparent !important;
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
-  display: none;          /* Chrome/Safari/Opera */
+  display: none;
+  /* Chrome/Safari/Opera */
 }
 
 body {
@@ -60,20 +63,22 @@ body {
   border: 1px solid var(--border-color) !important;
   border-radius: 25px !important;
   width: calc(100% - 8px);
-  margin: 4px auto;
-  height: auto !important;
+  height: 100vh !important;
   min-height: calc(100vh - 8px) !important;
   display: flex;
   flex-direction: column;
   overflow-y: visible !important;
   overflow-x: hidden !important;
   position: relative;
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 #visualisation-wrapper::-webkit-scrollbar {
-  display: none;          /* Chrome/Safari/Opera */
+  display: none;
+  /* Chrome/Safari/Opera */
 }
 
 /* --- Top Navbar --- */
