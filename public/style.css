@@ -52,9 +52,10 @@ body {
   border-radius: 25px !important;
   width: calc(100% - 8px);
   margin: 4px auto;
-  height: auto !important;
+  height: 100vh;
   min-height: calc(100vh - 8px) !important;
   display: flex;
+
   flex-direction: column;
   overflow: visible !important;
   position: relative;
