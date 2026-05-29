@@ -8,9 +8,7 @@ const canvas = document.getElementById('canvas');
 const canvasContainer = document.getElementById('canvas-container');
 const stackWrapper = document.getElementById('stack-wrapper');
 const nodeTooltip = document.getElementById('node-tooltip');
-const tooltipTitle = document.getElementById('tooltip-title');
 const tooltipDesc = document.getElementById('tooltip-desc');
-const tooltipIconContainer = document.getElementById('tooltip-icon-container');
 const fullscreenBtn = document.getElementById('fullscreen-btn');
 const workflowSelectWrapper = document.getElementById('workflow-select-wrapper');
 const workflowSelectedText = document.getElementById('workflow-selected-text');
@@ -337,8 +335,8 @@ function renderStack() {
         name: node.layerName,
         order: node.layerOrder,
         description: node.layerId === 'discovery' ? 'Platforms through which people can find the services that nudify or generate sexual scenes.' :
-                     node.layerId === 'gui' ? 'The easy to use modality via which non technical users engage with the model access providers' :
-                     node.layerId === 'model_access' ? 'Users engage with trained models through a model service provider. Beyond model access via an endpoint, such providers might enable download of models (HuggingFace, GitHub) and features such as gamification and monetary reward for models (CivitAI).' :
+                     node.layerId === 'gui' ? 'The easy to use modality via which non technical users can upload images to generate synthetic content' :
+                     node.layerId === 'model_access' ? 'Interfaces through which more technical users can access and build on top of AI models. Beyond simple access, providers might also enable download of the model (HuggingFace, GitHub) and provide features such as gamification and monetary rewards (CivitAI)' :
                      node.layerId === 'ml_models' ? 'Models are trained on individual/corporate hardware and datasets. Large base media models are fine tuned on specific sexual scenes.' :
                      'Images and videos are collected and annotated. Datasets enable base model training and fine-tuning',
         nodes: []
@@ -438,8 +436,8 @@ function drawLines() {
       line.setAttribute('y1', y1);
       line.setAttribute('x2', x);
       line.setAttribute('y2', y2);
-      line.setAttribute('stroke', 'rgba(0, 0, 0, 0.15)');
-      line.setAttribute('stroke-width', '1.5');
+      line.setAttribute('stroke', 'rgba(0, 0, 0, 0.08)');
+      line.setAttribute('stroke-width', '1');
       line.setAttribute('marker-end', 'url(#arrow-marker)');
       svg.appendChild(line);
     }
@@ -467,8 +465,8 @@ function drawLines() {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('d', `M ${x1} ${y1} H ${xMax} V ${y2} H ${x2}`);
       path.setAttribute('fill', 'none');
-      path.setAttribute('stroke', 'rgba(0, 0, 0, 0.15)');
-      path.setAttribute('stroke-width', '1.5');
+      path.setAttribute('stroke', 'rgba(0, 0, 0, 0.08)');
+      path.setAttribute('stroke-width', '1');
       path.setAttribute('marker-end', 'url(#arrow-marker)');
       svg.appendChild(path);
     }
@@ -504,9 +502,9 @@ function drawLines() {
           line.setAttribute('x2', p2.x);
           line.setAttribute('y2', p2.y);
           line.setAttribute('stroke', flow.color);
-          line.setAttribute('stroke-width', '3');
+          line.setAttribute('stroke-width', '1.5');
           line.setAttribute('stroke-dasharray', '6,4');
-          line.setAttribute('opacity', '0.85');
+          line.setAttribute('opacity', '0.5');
           
           const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
           animate.setAttribute('attributeName', 'stroke-dashoffset');
@@ -537,15 +535,7 @@ function showTooltip(node, anchorEl, pin = false) {
   clearTimeout(tooltipHideTimer);
 
   // Populate content
-  tooltipTitle.textContent = node.name;
   tooltipDesc.textContent = node.description;
-  tooltipIconContainer.innerHTML = '';
-  if (node.icon && node.icon !== 'none') {
-    const img = document.createElement('img');
-    img.src = node.icon;
-    img.alt = node.name;
-    tooltipIconContainer.appendChild(img);
-  }
 
   // Mark active info btn
   document.querySelectorAll('.node-info-btn').forEach(b => b.classList.remove('active'));
