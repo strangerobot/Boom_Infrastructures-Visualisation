@@ -137,7 +137,6 @@ async function init() {
     populateDropdown();
     renderStack();
     drawLines();
-    setupInfraIconTooltips();
   } catch (error) {
     console.error('Error loading data:', error);
   }
@@ -228,7 +227,7 @@ function selectWorkflow(flowId) {
     });
 
   } else {
-    workflowSelectedText.textContent = 'Select a workflow...';
+    workflowSelectedText.textContent = 'Choose a scenario to explore';
 
     // Return to neutral unselected state
     canvasContainer.classList.remove('workflow-active');

@@ -1,4 +1,6 @@
-WorkflowID,WorkflowName,WorkflowColor,Description,NodeIDs
-workflow_google,Telegram Bot via Google Search,#BC0000,"Users search on Google, launch a Telegram Nudifier Bot, and connect to CivitAI models using Finetune LoRAs and personal social media photographs.","google_search;telegram_bot;civitai;finetune_lora;personal_media"
-workflow_instagram,Websites via Instagram Ads,#2ECC71,"Users find services through Instagram Feed ads, access Websites, which pull models from HuggingFace to run Stable Diffusion models trained on LAION-5B datasets.","social_media;web_apps;huggingface;stable_diffusion;laion_5b"
-workflow_chatgpt,Discord Bot via ChatGPT/LLMs,#5865F2,"Users query ChatGPT/LLMs for prompt guidelines, run them on Discord Bots connecting via REST APIs to Flux models trained on scraped Porn Videos.","chatgpt_llms;discord_bot;rest_api;flux;porn_videos"
+"WorkflowID","WorkflowName","WorkflowColor","Description","NodeIDs"
+"scenario_clothoff","Tell me other apps like ClothOff","#6A1B9A","Users ask ChatGPT / LLMs for alternative applications, then access Websites and Telegram Bots connected via REST APIs.","chatgpt_llms;web_apps;telegram_bot;rest_api"
+"scenario_computer_nudes","How can I use AI to generate nudes on my computer?","#00796B","Users search Google to download models from HuggingFace and run Wan2.2 locally.","google_search;huggingface;wan_2_2"
+"scenario_grok_strip","Grok, strip her","#1E3A8A","Users prompt the X/Grok GUI, which routes queries via REST API to the Grok ML model.","x_grok;rest_api;grok"
+"scenario_art_generator","AI Art Generator","#B25E00","Users search the Play Store for image generators and download dedicated Phone Apps.","google_play_store;smartphone_app"
+"scenario_image_edit","How do I edit an image using AI","#B33925","Users watch tutorials on YouTube and visit CivitAI to find models and resources.","youtube_interface;civitai"
