@@ -278,39 +278,18 @@ function createNodeEl(node, hasTooltip) {
   nameSpan.textContent = node.name;
   label.appendChild(nameSpan);
 
-  if (hasTooltip && node.description) {
-    const infoBtn = document.createElement('button');
-    infoBtn.className = 'node-info-btn';
-    infoBtn.setAttribute('aria-label', 'More info about ' + node.name);
-    infoBtn.innerHTML = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="5" cy="5" r="4.5" stroke="currentColor"/><path d="M5 4.5v3" stroke="currentColor" stroke-linecap="round"/><circle cx="5" cy="3" r="0.5" fill="currentColor"/></svg>`;
-    infoBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      // Toggle pin: if already pinned for this node, hide; otherwise pin
-      if (nodeTooltip.dataset.pinned && nodeTooltip.dataset.pinnedFor === node.id) {
-        hideTooltip();
-      } else {
-        showTooltip(node, infoBtn, true);
-      }
-    });
-    infoBtn.addEventListener('mouseenter', () => {
-      showTooltip(node, infoBtn, false);
-    });
-    infoBtn.addEventListener('mouseleave', () => {
-      if (!nodeTooltip.dataset.pinned) hideTooltip();
-    });
-    label.appendChild(infoBtn);
-  }
-  
   el.appendChild(iconWrapper);
   el.appendChild(label);
 
-  // On mobile/tablet the info btn is hidden — tapping the node itself shows the tooltip
   if (hasTooltip && node.description) {
+    el.addEventListener('mouseenter', () => {
+      showTooltip(node, el, false);
+    });
+    el.addEventListener('mouseleave', () => {
+      if (!nodeTooltip.dataset.pinned) hideTooltip();
+    });
     el.addEventListener('click', (e) => {
-      // Only handle on touch/small-screen sizes; desktop uses the info btn
-      if (window.innerWidth > 768) return;
       e.stopPropagation();
-      // Toggle: tap again to dismiss
       if (nodeTooltip.dataset.pinned && nodeTooltip.dataset.pinnedFor === node.id) {
         hideTooltip();
       } else {
@@ -336,7 +315,7 @@ function renderStack() {
         order: node.layerOrder,
         description: node.layerId === 'discovery' ? 'Platforms through which people can find the services that nudify or generate sexual scenes.' :
                      node.layerId === 'gui' ? 'The easy to use modality via which non technical users can upload images to generate synthetic content' :
-                     node.layerId === 'model_access' ? 'Interfaces through which more technical users can access and build on top of AI models. Beyond simple access, providers might also enable download of the model (HuggingFace, GitHub) and provide features such as gamification and monetary rewards (CivitAI)' :
+                     node.layerId === 'model_access' ? 'Interfaces through which more technical users can access models and build on top of AI models. Providers might also support model downloads, gamification and monetisation features.' :
                      node.layerId === 'ml_models' ? 'Models are trained on individual/corporate hardware and datasets. Large base media models are fine tuned on specific sexual scenes.' :
                      'Images and videos are collected and annotated. Datasets enable base model training and fine-tuning',
         nodes: []
@@ -373,13 +352,25 @@ function renderStack() {
     const containerEl = document.createElement('div');
     containerEl.className = 'layer-container';
     if (idx >= sortedLayers.length - 2) {
-      containerEl.classList.add('dotted-border');
+      containerEl.classList.add('solid-border');
     }
     
     layer.nodes.forEach(node => {
       const nodeEl = createNodeEl(node, true); // all layers get tooltip
       containerEl.appendChild(nodeEl);
     });
+
+    // Add "more" three-dot icon at the right end of each layer
+    const moreEl = document.createElement('div');
+    moreEl.className = 'layer-more-dots';
+    moreEl.innerHTML = `
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="5" cy="12" r="2" fill="currentColor"/>
+        <circle cx="12" cy="12" r="2" fill="currentColor"/>
+        <circle cx="19" cy="12" r="2" fill="currentColor"/>
+      </svg>
+    `;
+    containerEl.appendChild(moreEl);
     
     rowEl.appendChild(textboxEl);
     rowEl.appendChild(containerEl);
@@ -394,127 +385,49 @@ function drawLines() {
   if (!svg) return;
   svg.innerHTML = '';
   
+  if (!selectedWorkflowId) return;
+  
   const canvasRect = canvas.getBoundingClientRect();
-
-  // Create defs for arrow marker
-  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-  marker.setAttribute('id', 'arrow-marker');
-  marker.setAttribute('viewBox', '0 0 10 10');
-  marker.setAttribute('refX', '8');
-  marker.setAttribute('refY', '5');
-  marker.setAttribute('markerWidth', '6');
-  marker.setAttribute('markerHeight', '6');
-  marker.setAttribute('orient', 'auto');
-  
-  const markerPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  markerPath.setAttribute('d', 'M 0 1.5 L 8 5 L 0 8.5 z');
-  markerPath.setAttribute('fill', 'rgba(0, 0, 0, 0.2)');
-  marker.appendChild(markerPath);
-  defs.appendChild(marker);
-  svg.appendChild(defs);
-
-  // 1. Draw static layer-to-layer connections
-  const layerRows = Array.from(document.querySelectorAll('.layer-row'));
-  const layerContainers = layerRows.map(row => row.querySelector('.layer-container'));
-  
-  // Draw vertical arrows between sequential layers
-  for (let i = 0; i < layerContainers.length - 1; i++) {
-    const current = layerContainers[i];
-    const next = layerContainers[i + 1];
+  const flow = workflowsData.find(w => w.id === selectedWorkflowId);
+  if (flow && flow.nodeIds.length > 1) {
+    const centers = {};
+    const allNodeEls = document.querySelectorAll('.node');
     
-    if (current && next) {
-      const currentRect = current.getBoundingClientRect();
-      const nextRect = next.getBoundingClientRect();
-      
-      const x = (currentRect.left + currentRect.right) / 2 - canvasRect.left;
-      const y1 = currentRect.bottom - canvasRect.top;
-      const y2 = nextRect.top - canvasRect.top;
-      
-      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('x1', x);
-      line.setAttribute('y1', y1);
-      line.setAttribute('x2', x);
-      line.setAttribute('y2', y2);
-      line.setAttribute('stroke', 'rgba(0, 0, 0, 0.08)');
-      line.setAttribute('stroke-width', '1');
-      line.setAttribute('marker-end', 'url(#arrow-marker)');
-      svg.appendChild(line);
-    }
-  }
+    allNodeEls.forEach(el => {
+      const id = el.dataset.nodeId;
+      const iconEl = el.querySelector('.node-icon') || el;
+      const iconRect = iconEl.getBoundingClientRect();
+      centers[id] = {
+        x: (iconRect.left + iconRect.right) / 2 - canvasRect.left,
+        y: (iconRect.top + iconRect.bottom) / 2 - canvasRect.top
+      };
+    });
 
-  // Draw Layer 1 -> Layer 3 side arrow
-  if (layerContainers.length >= 3) {
-    const l1 = layerContainers[0];
-    const l3 = layerContainers[2];
-    
-    if (l1 && l3) {
-      const l1Rect = l1.getBoundingClientRect();
-      const l3Rect = l3.getBoundingClientRect();
+    for (let i = 0; i < flow.nodeIds.length - 1; i++) {
+      const fromId = flow.nodeIds[i];
+      const toId = flow.nodeIds[i + 1];
+      const p1 = centers[fromId];
+      const p2 = centers[toId];
       
-      const x1 = l1Rect.right - canvasRect.left;
-      const y1 = (l1Rect.top + l1Rect.bottom) / 2 - canvasRect.top;
-      
-      const x2 = l3Rect.right - canvasRect.left;
-      const y2 = (l3Rect.top + l3Rect.bottom) / 2 - canvasRect.top;
-      
-      // Calculate layout box bounds so side arrow goes off to the right nicely and doesn't get clipped
-      const maxAllowedX = canvasRect.width - (window.innerWidth <= 768 ? 4 : 8);
-      const xMax = Math.min(Math.max(l1Rect.right, l3Rect.right) - canvasRect.left + (window.innerWidth <= 768 ? 11 : 17), maxAllowedX);
-      
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.setAttribute('d', `M ${x1} ${y1} H ${xMax} V ${y2} H ${x2}`);
-      path.setAttribute('fill', 'none');
-      path.setAttribute('stroke', 'rgba(0, 0, 0, 0.08)');
-      path.setAttribute('stroke-width', '1');
-      path.setAttribute('marker-end', 'url(#arrow-marker)');
-      svg.appendChild(path);
-    }
-  }
-
-  // 2. Draw Active Workflow Nodes Sequenced Dotted Line Path
-  if (selectedWorkflowId) {
-    const flow = workflowsData.find(w => w.id === selectedWorkflowId);
-    if (flow && flow.nodeIds.length > 1) {
-      const centers = {};
-      const allNodeEls = document.querySelectorAll('.node');
-      
-      allNodeEls.forEach(el => {
-        const id = el.dataset.nodeId;
-        const iconEl = el.querySelector('.node-icon') || el;
-        const iconRect = iconEl.getBoundingClientRect();
-        centers[id] = {
-          x: (iconRect.left + iconRect.right) / 2 - canvasRect.left,
-          y: (iconRect.top + iconRect.bottom) / 2 - canvasRect.top
-        };
-      });
-
-      for (let i = 0; i < flow.nodeIds.length - 1; i++) {
-        const fromId = flow.nodeIds[i];
-        const toId = flow.nodeIds[i + 1];
-        const p1 = centers[fromId];
-        const p2 = centers[toId];
+      if (p1 && p2) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', p1.x);
+        line.setAttribute('y1', p1.y);
+        line.setAttribute('x2', p2.x);
+        line.setAttribute('y2', p2.y);
+        line.setAttribute('stroke', flow.color);
+        line.setAttribute('stroke-width', '1.5');
+        line.setAttribute('stroke-dasharray', '6,4');
+        line.setAttribute('opacity', '0.5');
         
-        if (p1 && p2) {
-          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          line.setAttribute('x1', p1.x);
-          line.setAttribute('y1', p1.y);
-          line.setAttribute('x2', p2.x);
-          line.setAttribute('y2', p2.y);
-          line.setAttribute('stroke', flow.color);
-          line.setAttribute('stroke-width', '1.5');
-          line.setAttribute('stroke-dasharray', '6,4');
-          line.setAttribute('opacity', '0.5');
-          
-          const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-          animate.setAttribute('attributeName', 'stroke-dashoffset');
-          animate.setAttribute('values', '10;0');
-          animate.setAttribute('dur', '1.2s');
-          animate.setAttribute('repeatCount', 'indefinite');
-          line.appendChild(animate);
-          
-          svg.appendChild(line);
-        }
+        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        animate.setAttribute('attributeName', 'stroke-dashoffset');
+        animate.setAttribute('values', '10;0');
+        animate.setAttribute('dur', '1.2s');
+        animate.setAttribute('repeatCount', 'indefinite');
+        line.appendChild(animate);
+        
+        svg.appendChild(line);
       }
     }
   }

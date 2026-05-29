@@ -1,4 +1,4 @@
 WorkflowID,WorkflowName,WorkflowColor,Description,NodeIDs
 workflow_google,Telegram Bot via Google Search,#BC0000,"Users search on Google, launch a Telegram Nudifier Bot, and connect to CivitAI models using Finetune LoRAs and personal social media photographs.","google_search;telegram_bot;civitai;finetune_lora;personal_media"
-workflow_instagram,Websites via Instagram Ads,#2ECC71,"Users find services through Instagram Feed ads, access Websites, which pull models from HuggingFace to run Stable Diffusion models trained on LAION-5B datasets.","instagram_feed;web_apps;huggingface;stable_diffusion;laion_5b"
+workflow_instagram,Websites via Instagram Ads,#2ECC71,"Users find services through Instagram Feed ads, access Websites, which pull models from HuggingFace to run Stable Diffusion models trained on LAION-5B datasets.","social_media;web_apps;huggingface;stable_diffusion;laion_5b"
 workflow_chatgpt,Discord Bot via ChatGPT/LLMs,#5865F2,"Users query ChatGPT/LLMs for prompt guidelines, run them on Discord Bots connecting via REST APIs to Flux models trained on scraped Porn Videos.","chatgpt_llms;discord_bot;rest_api;flux;porn_videos"
