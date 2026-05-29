@@ -15,7 +15,8 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: auto !important;
   min-height: 100% !important;
   margin: 0;
@@ -267,7 +268,8 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.15); /* subtle dimming */
+  background-color: rgba(0, 0, 0, 0.15);
+  /* subtle dimming */
   z-index: 90;
   transition: opacity 0.3s ease;
 }
@@ -285,6 +287,7 @@ body {
 #canvas {
   width: 100%;
   max-width: 800px;
+  height: 100%;
   border: 1px dashed rgba(0, 0, 0, 0.35);
   border-radius: 25px;
   padding: 20px;
@@ -348,7 +351,8 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 28px; /* Spaced layers matching Figma */
+  gap: 28px;
+  /* Spaced layers matching Figma */
 }
 
 
@@ -625,13 +629,16 @@ body {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--bg-canvas);
 }
+
 ::-webkit-scrollbar-thumb {
   background: #c8c0b5;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #b0a79b;
 }
@@ -642,25 +649,31 @@ body {
     padding: 12px 15px;
     min-height: 56px;
   }
+
   #diagram-title {
     font-size: 14px;
   }
+
   #fullscreen-btn {
     width: 44px;
     height: 36px;
     border-radius: 8px;
   }
+
   #fullscreen-btn img {
     width: 24px;
     height: 24px;
   }
+
   #app {
     padding: 0 !important;
   }
+
   #canvas-container {
     padding: 10px 0 0 0;
     flex-grow: 1;
   }
+
   #canvas {
     padding: 10px;
     border-radius: 15px;
@@ -668,28 +681,34 @@ body {
     display: flex;
     flex-direction: column;
   }
+
   #stack-wrapper {
     gap: 12px;
   }
+
   .layer-row {
     flex-direction: row;
     align-items: center;
     gap: 8px;
   }
+
   .layer-textbox {
     flex: 1;
     min-width: 80px;
     max-width: 50%;
     gap: 3px;
   }
+
   .layer-title {
     font-size: 12px;
     font-weight: 700;
   }
+
   .layer-desc {
     font-size: 10px;
     line-height: 1.25;
   }
+
   .layer-container {
     flex: 1;
     max-width: 55%;
@@ -699,6 +718,7 @@ body {
     padding: 3px;
     border-radius: 10px;
   }
+
   .node {
     width: auto;
     height: 100%;
@@ -712,47 +732,54 @@ body {
     justify-content: center;
     gap: 4px;
   }
+
   .node-icon {
     width: 16px;
     height: 16px;
     background: none;
     border: none;
   }
+
   .node-icon img {
     width: 100%;
     height: 100%;
   }
+
   .node-label {
     font-size: 9px;
     line-height: 1.15;
     font-weight: 400;
     display: block;
   }
+
   .node-info-btn {
     display: none;
   }
- 
+
   /* Active Highlights inside mobile — highlight the entire node card */
   .active-state .node.active-path-node {
     background-color: #ffffff;
     border: 1.5px solid var(--workflow-color);
   }
+
   .active-state .node.active-path-node .node-icon {
     background-color: transparent;
     border: none;
     box-shadow: none;
   }
+
   .active-state .node.selected-node,
   #canvas.tooltip-pinned .node.tooltip-source {
     border: 1.5px solid #000000;
     background-color: #ffffff !important;
   }
+
   .active-state .node.selected-node .node-icon,
   #canvas.tooltip-pinned .node.tooltip-source .node-icon {
     border: none;
     box-shadow: none;
   }
- 
+
   #infra-header {
     flex-direction: row;
     justify-content: flex-end;
@@ -760,86 +787,105 @@ body {
     gap: 10px;
     margin-bottom: 12px;
   }
+
   #infra-text {
     text-align: right;
     font-size: 10px;
     max-width: 200px;
     line-height: 1.2;
   }
+
   .infra-icon-wrapper {
     width: 18px;
     height: 18px;
   }
+
   .infra-icon-wrapper[title="Cloudflare"] {
     padding: 2px;
   }
+
   .layer-more-dots {
     display: none;
   }
 }
- 
+
 /* --- Tablet View --- */
 @media (min-width: 481px) and (max-width: 768px) {
   #navbar {
     padding: 14px 20px;
     min-height: 60px;
   }
+
   #diagram-title {
     font-size: 16px;
   }
+
   #fullscreen-btn {
     width: 52px;
     height: 40px;
     border-radius: 8px;
   }
+
   #fullscreen-btn img {
     width: 28px;
     height: 28px;
   }
+
   #app {
     padding: 0 !important;
   }
+
   #canvas-container {
     padding: 15px 0 0 0;
   }
+
   #canvas {
     padding: 20px;
   }
+
   .layer-textbox {
     flex: 0 0 160px;
     gap: 4px;
   }
+
   .layer-title {
     font-size: 12px;
   }
+
   .layer-desc {
     font-size: 11px;
     line-height: 1.45;
   }
+
   .layer-container {
     padding: 8px 36px 8px 6px;
     gap: 3px;
     flex-wrap: nowrap;
     justify-content: center;
   }
+
   .node {
     width: 60px;
     gap: 3px;
     flex-shrink: 0;
   }
+
   .node-icon {
     width: 32px;
     height: 32px;
   }
+
   .node-icon img {
     width: 16px;
     height: 16px;
   }
+
   .node-label {
     font-size: 10px;
     line-height: 1.15;
     display: block;
   }
+
   .node-info-btn {
     display: none;
   }
@@ -850,36 +896,44 @@ body {
   .layer-row {
     gap: 12px;
   }
+
   .layer-textbox {
     flex: 0 0 140px;
     min-width: 0;
   }
+
   .layer-title {
     font-size: 11px;
   }
+
   .layer-desc {
     font-size: 10px;
     line-height: 1.35;
   }
+
   .layer-container {
     gap: 2px;
     padding: 6px 32px 6px 4px;
     flex-wrap: nowrap;
     justify-content: center;
   }
+
   .node {
     width: 48px;
     gap: 2px;
     flex-shrink: 0;
   }
+
   .node-icon {
     width: 28px;
     height: 28px;
   }
+
   .node-icon img {
     width: 14px;
     height: 14px;
   }
+
   .node-label {
     font-size: 9px;
   }
