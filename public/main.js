@@ -147,18 +147,6 @@ async function init() {
 function populateDropdown() {
   workflowDropdownList.innerHTML = '';
 
-  // Add default reset option
-  const defaultOpt = document.createElement('div');
-  defaultOpt.className = 'workflow-option-item';
-  defaultOpt.dataset.value = '';
-  defaultOpt.textContent = 'Select a workflow...';
-  defaultOpt.addEventListener('click', (e) => {
-    e.stopPropagation();
-    selectWorkflow('');
-    closeDropdown();
-  });
-  workflowDropdownList.appendChild(defaultOpt);
-
   workflowsData.forEach(flow => {
     const opt = document.createElement('div');
     opt.className = 'workflow-option-item';
@@ -166,6 +154,7 @@ function populateDropdown() {
     opt.textContent = flow.name;
     opt.style.setProperty('--workflow-hover-color', flow.color);
     opt.style.setProperty('--workflow-item-color', flow.color);
+    opt.style.setProperty('--workflow-hover-bg', hexToRgbA(flow.color, 0.1));
 
     opt.addEventListener('click', (e) => {
       e.stopPropagation();

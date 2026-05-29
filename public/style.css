@@ -216,6 +216,11 @@ body {
   white-space: nowrap;
 }
 
+#canvas-container:not(.workflow-active) #workflow-selected-text {
+  font-weight: 400;
+  opacity: 0.5;
+}
+
 #workflow-select-arrow {
   color: rgba(0, 0, 0, 0.6);
   display: flex;
@@ -261,12 +266,19 @@ body {
 }
 
 .workflow-option-item:hover {
-  background-color: #faf6f0;
+  background-color: var(--workflow-hover-bg);
+  color: var(--workflow-hover-color);
 }
 
 .workflow-option-item.active-option {
   font-weight: 600;
-  background-color: #faf6f0;
+  background-color: var(--workflow-hover-bg);
+  color: var(--workflow-hover-color);
+}
+
+.workflow-option-item.default-option {
+  font-weight: 400;
+  opacity: 0.5;
 }
 
 /* Dropdown active highlight state */
@@ -459,6 +471,18 @@ body {
   transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
 }
 
+#canvas:not(.tooltip-pinned) #stack-wrapper:not(.active-state):has(.node:hover) .node {
+  opacity: 0.5;
+}
+
+#canvas:not(.tooltip-pinned) #stack-wrapper:not(.active-state):has(.node:hover) .node:hover {
+  opacity: 1 !important;
+}
+
+.node:hover .node-icon {
+  border: 3px solid #000000;
+}
+
 .node-icon {
   width: 32px;
   height: 32px;
@@ -574,11 +598,11 @@ body {
   position: fixed;
   z-index: 9999;
   background-color: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1.5px solid #000000;
   border-radius: 16px;
   padding: 16px 18px;
-  width: 220px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.13), 0 2px 8px rgba(0, 0, 0, 0.07);
+  width: 230px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), 0 4px 10px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -595,9 +619,9 @@ body {
 
 #tooltip-desc {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 12px;
   color: #000000;
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
 }
 
