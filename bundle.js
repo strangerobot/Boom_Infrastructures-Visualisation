@@ -104,7 +104,7 @@ const jsTagPattern = `<script src="main.js"></script>`;
 const inlineJsTag = `<script>${jsContent}</script>`;
 htmlContent = htmlContent.replace(jsTagPattern, inlineJsTag);
 
-// Write to package.html
-const outputFilePath = path.join(__dirname, 'package.html');
+// Write to infrastructure_visualisation_package.html
+const outputFilePath = path.join(__dirname, 'infrastructure_visualisation_package.html');
 fs.writeFileSync(outputFilePath, htmlContent, 'utf8');
 console.log(`Successfully compiled self-contained HTML file: ${outputFilePath}`);

@@ -78,11 +78,30 @@ To deploy the backend server:
 
 ## Embedding the Visualisation
 
-You can seamlessly embed this tech stack diagram into any external article, blog post, or webpage using the following responsive `<iframe>` code template:
+You can integrate this interactive tech stack diagram into any website, blog post, or CMS (like WordPress, Webflow, Shopify) using the methods below:
+
+### 1. Hosted Service Embed
+If using the live hosted version, insert this responsive `<iframe>` code:
 
 ```html
 <iframe 
   src="https://boom-infrastructures-visualisation.yatharthswebsite.workers.dev/" 
+  style="width: 100%; height: 900px; border: none; padding: 0; display: block;" 
+  allow="fullscreen" 
+  allowfullscreen 
+  title="Infrastructure Visualisation">
+</iframe>
+```
+
+### 2. Standalone HTML Package Embed (`infrastructure_visualisation_package.html`)
+If you want to host the files yourself independently without setting up an Express server (perfect for sharing with clients or embedding into existing CMS pages):
+
+1. **Upload the File**: Upload `infrastructure_visualisation_package.html` directly to your web server, CMS media manager, or a cloud bucket (e.g., AWS S3).
+2. **Embed the Code**: Reference the uploaded file using an `<iframe>` container:
+
+```html
+<iframe 
+  src="https://yourwebsite.com/path/to/infrastructure_visualisation_package.html" 
   style="width: 100%; height: 900px; border: none; padding: 0; display: block;" 
   allow="fullscreen" 
   allowfullscreen 
