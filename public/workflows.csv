@@ -2,5 +2,5 @@
 "scenario_clothoff","Tell me other apps like ClothOff","#6A1B9A","Users ask ChatGPT / LLMs for alternative applications, then access Websites and Telegram Bots connected via REST APIs.","chatgpt_llms;web_apps;telegram_bot;rest_api"
 "scenario_computer_nudes","How can I use AI to generate nudes on my computer?","#00796B","Users search Google to download models from HuggingFace and run Wan2.2 locally.","google_search;huggingface;wan_2_2"
 "scenario_grok_strip","Grok, strip her","#1E3A8A","Users prompt the X/Grok GUI, which routes queries via REST API to the Grok ML model.","x_grok;rest_api;grok"
-"scenario_art_generator","AI Art Generator","#B25E00","Users search the Play Store for image generators and download dedicated Phone Apps.","google_play_store;smartphone_app"
-"scenario_image_edit","How do I edit an image using AI","#B33925","Users watch tutorials on YouTube and visit CivitAI to find models and resources.","youtube_interface;civitai"
+"scenario_art_generator","Cloth off","#B25E00","Users search the Google Play Store to discover and download dedicated mobile applications.","google_play_store;smartphone_app"
+"scenario_image_edit","How to train model to make images of women in blouse?","#B33925","Users watch video tutorials on YouTube, find model resources on CivitAI, and use Stable Diffusion.","youtube_interface;civitai;stable_diffusion"

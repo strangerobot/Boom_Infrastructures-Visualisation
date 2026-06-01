@@ -437,7 +437,6 @@ body {
 /* Right dashed box layer */
 .layer-container {
   flex: 1;
-  border: 1.5px dashed rgba(0, 0, 0, 0.2);
   border-radius: 20px;
   padding: 10px 48px 10px 12px;
   display: flex;
@@ -445,6 +444,7 @@ body {
   align-items: center;
   gap: 3px;
   background-color: transparent;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='20' ry='20' stroke='rgba(0, 0, 0, 0.32)' stroke-width='1.5' stroke-dasharray='4%2c 12' stroke-linecap='square'/%3e%3c/svg%3e");
   transition: all var(--transition-speed) ease;
   position: relative;
   z-index: 2;
@@ -452,7 +452,8 @@ body {
 }
 
 .layer-container.solid-border {
-  border-style: solid !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.2) !important;
+  background-image: none !important;
 }
 
 .layer-more-dots {
@@ -590,6 +591,11 @@ body {
 }
 
 #canvas.tooltip-pinned #infra-text {
+  opacity: 0.15;
+  transition: opacity 0.25s ease;
+}
+
+#canvas.tooltip-pinned #optional-layers-note {
   opacity: 0.15;
   transition: opacity 0.25s ease;
 }
@@ -774,6 +780,12 @@ body {
     gap: 4px;
     padding: 3px;
     border-radius: 10px;
+    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='rgba(0, 0, 0, 0.32)' stroke-width='1.5' stroke-dasharray='3%2c 9' stroke-linecap='square'/%3e%3c/svg%3e");
+  }
+
+  .layer-container.solid-border {
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    background-image: none !important;
   }
 
   .node {
@@ -1023,4 +1035,49 @@ body {
 #footer-credits a {
   color: #000000;
   text-decoration: none;
+}
+
+/* --- Optional Layers Note --- */
+.note-row {
+  margin-top: 24px;
+  width: 100%;
+}
+
+#optional-layers-note {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  opacity: 0.5; /* 50% opacity */
+  color: #000000;
+  transition: opacity var(--transition-speed) ease;
+  z-index: 10;
+  position: relative;
+}
+
+.note-star {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  line-height: 1.4;
+  flex-shrink: 0;
+  transform: translateY(2px);
+}
+
+.note-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .note-row {
+    margin-top: 15px;
+  }
+  .note-row .empty-textbox {
+    display: none;
+  }
+  #optional-layers-note {
+    padding: 0;
+  }
 }
