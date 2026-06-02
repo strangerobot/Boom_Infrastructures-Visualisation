@@ -216,15 +216,56 @@ function selectWorkflow(flowId) {
     stackWrapper.style.setProperty('--workflow-glow-color', hexToRgbA(flow.color, 0.25));
 
     // Mark nodes on active path
+    const hasDatasetInFlow = flow && flow.nodeIds.some(id => {
+      const node = nodesData.find(n => n.id === id);
+      return node && node.layerId === 'datasets';
+    });
+    
+    const isClothoffFlow = flow && flow.id === 'scenario_clothoff';
+
     const allNodeEls = document.querySelectorAll('.node');
     allNodeEls.forEach(el => {
       const nodeId = el.dataset.nodeId;
-      if (flow.nodeIds.includes(nodeId)) {
+      const node = nodesData.find(n => n.id === nodeId);
+      const isDatasetNode = node && node.layerId === 'datasets';
+      const isMlModelNode = node && node.layerId === 'ml_models';
+      
+      const shouldHighlight = flow && (
+        flow.nodeIds.includes(nodeId) || 
+        (isDatasetNode && hasDatasetInFlow) ||
+        (isMlModelNode && isClothoffFlow)
+      );
+      
+      if (shouldHighlight) {
         el.classList.add('active-path-node');
       } else {
         el.classList.remove('active-path-node');
       }
     });
+
+    // Highlight outline of datasets layer if active
+    const datasetsLayerEl = document.querySelector('.layer-row[data-layer-id="datasets"] .layer-container');
+    if (datasetsLayerEl) {
+      if (hasDatasetInFlow) {
+        datasetsLayerEl.classList.add('active-layer-highlight');
+        datasetsLayerEl.style.setProperty('--layer-active-color', flow.color);
+      } else {
+        datasetsLayerEl.classList.remove('active-layer-highlight');
+        datasetsLayerEl.style.removeProperty('--layer-active-color');
+      }
+    }
+
+    // Highlight outline of ml_models layer if active (specifically for ClothOff scenario)
+    const mlModelsLayerEl = document.querySelector('.layer-row[data-layer-id="ml_models"] .layer-container');
+    if (mlModelsLayerEl) {
+      if (isClothoffFlow) {
+        mlModelsLayerEl.classList.add('active-layer-highlight');
+        mlModelsLayerEl.style.setProperty('--layer-active-color', flow.color);
+      } else {
+        mlModelsLayerEl.classList.remove('active-layer-highlight');
+        mlModelsLayerEl.style.removeProperty('--layer-active-color');
+      }
+    }
 
   } else {
     workflowSelectedText.textContent = 'Choose a scenario to explore';
@@ -237,6 +278,18 @@ function selectWorkflow(flowId) {
     allNodeEls.forEach(el => {
       el.classList.remove('active-path-node');
     });
+
+    const datasetsLayerEl = document.querySelector('.layer-row[data-layer-id="datasets"] .layer-container');
+    if (datasetsLayerEl) {
+      datasetsLayerEl.classList.remove('active-layer-highlight');
+      datasetsLayerEl.style.removeProperty('--layer-active-color');
+    }
+
+    const mlModelsLayerEl = document.querySelector('.layer-row[data-layer-id="ml_models"] .layer-container');
+    if (mlModelsLayerEl) {
+      mlModelsLayerEl.classList.remove('active-layer-highlight');
+      mlModelsLayerEl.style.removeProperty('--layer-active-color');
+    }
   }
 
   drawLines();
@@ -367,6 +420,28 @@ function renderStack() {
   });
 }
 
+// Helper to create an animated SVG dashed line
+function createSvgLine(x1, y1, x2, y2, strokeColor, svg) {
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  line.setAttribute('x1', x1);
+  line.setAttribute('y1', y1);
+  line.setAttribute('x2', x2);
+  line.setAttribute('y2', y2);
+  line.setAttribute('stroke', strokeColor);
+  line.setAttribute('stroke-width', '1.5');
+  line.setAttribute('stroke-dasharray', '6,4');
+  line.setAttribute('opacity', '0.5');
+  
+  const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+  animate.setAttribute('attributeName', 'stroke-dashoffset');
+  animate.setAttribute('values', '10;0');
+  animate.setAttribute('dur', '1.2s');
+  animate.setAttribute('repeatCount', 'indefinite');
+  line.appendChild(animate);
+  
+  svg.appendChild(line);
+}
+
 // --- Draw SVG connections ---
 function drawLines() {
   const svg = document.getElementById('connections-svg');
@@ -391,31 +466,72 @@ function drawLines() {
       };
     });
 
-    for (let i = 0; i < flow.nodeIds.length - 1; i++) {
-      const fromId = flow.nodeIds[i];
-      const toId = flow.nodeIds[i + 1];
+    // Segment active nodes by layer type for routing
+    const baseNodes = flow.nodeIds.filter(id => {
+      const node = nodesData.find(n => n.id === id);
+      return node && node.layerId !== 'ml_models' && node.layerId !== 'datasets';
+    });
+    
+    const mlNodes = flow.nodeIds.filter(id => {
+      const node = nodesData.find(n => n.id === id);
+      return node && node.layerId === 'ml_models';
+    });
+    
+    const datasetNodes = flow.nodeIds.filter(id => {
+      const node = nodesData.find(n => n.id === id);
+      return node && node.layerId === 'datasets';
+    });
+    
+    // 1. Connect base nodes sequentially (Discovery -> GUI -> Model Access)
+    for (let i = 0; i < baseNodes.length - 1; i++) {
+      const fromId = baseNodes[i];
+      const toId = baseNodes[i + 1];
       const p1 = centers[fromId];
       const p2 = centers[toId];
-      
       if (p1 && p2) {
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', p1.x);
-        line.setAttribute('y1', p1.y);
-        line.setAttribute('x2', p2.x);
-        line.setAttribute('y2', p2.y);
-        line.setAttribute('stroke', flow.color);
-        line.setAttribute('stroke-width', '1.5');
-        line.setAttribute('stroke-dasharray', '6,4');
-        line.setAttribute('opacity', '0.5');
+        createSvgLine(p1.x, p1.y, p2.x, p2.y, flow.color, svg);
+      }
+    }
+    
+    // 2. Connect the last base node to all active ML model nodes (handles branching)
+    if (baseNodes.length > 0 && mlNodes.length > 0) {
+      const lastBaseId = baseNodes[baseNodes.length - 1];
+      const pLastBase = centers[lastBaseId];
+      if (pLastBase) {
+        mlNodes.forEach(mlId => {
+          const pMl = centers[mlId];
+          if (pMl) {
+            createSvgLine(pLastBase.x, pLastBase.y, pMl.x, pMl.y, flow.color, svg);
+          }
+        });
+      }
+    }
+    
+    // 3. Connect all active ML model nodes straight down to the datasets layer top border
+    if (mlNodes.length > 0 && datasetNodes.length > 0) {
+      const datasetsLayerContainer = document.querySelector('.layer-row[data-layer-id="datasets"] .layer-container');
+      if (datasetsLayerContainer) {
+        const containerRect = datasetsLayerContainer.getBoundingClientRect();
+        const topY = containerRect.top - canvasRect.top;
         
-        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-        animate.setAttribute('attributeName', 'stroke-dashoffset');
-        animate.setAttribute('values', '10;0');
-        animate.setAttribute('dur', '1.2s');
-        animate.setAttribute('repeatCount', 'indefinite');
-        line.appendChild(animate);
-        
-        svg.appendChild(line);
+        mlNodes.forEach(mlId => {
+          const pMl = centers[mlId];
+          if (pMl) {
+            createSvgLine(pMl.x, pMl.y, pMl.x, topY, flow.color, svg);
+          }
+        });
+      }
+    }
+    // Fallback: If there are no ML nodes, connect last base node straight to Datasets layer top
+    else if (baseNodes.length > 0 && datasetNodes.length > 0) {
+      const lastBaseId = baseNodes[baseNodes.length - 1];
+      const pLastBase = centers[lastBaseId];
+      
+      const datasetsLayerContainer = document.querySelector('.layer-row[data-layer-id="datasets"] .layer-container');
+      if (pLastBase && datasetsLayerContainer) {
+        const containerRect = datasetsLayerContainer.getBoundingClientRect();
+        const topY = containerRect.top - canvasRect.top;
+        createSvgLine(pLastBase.x, pLastBase.y, pLastBase.x, topY, flow.color, svg);
       }
     }
   }

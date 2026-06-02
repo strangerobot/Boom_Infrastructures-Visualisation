@@ -9,7 +9,7 @@ smartphone_app,Phone App,assets/nudeify_apps.svg,gui,Graphical User Interface,2,
 web_apps,Websites,assets/nudeify_websites.svg,gui,Graphical User Interface,2,"Websites with user registration, templates and interface for uploading images and creating morphs."
 discord_bot,Discord Bot,assets/discord.png,gui,Graphical User Interface,2,"Bots on Discord servers that take images and prompts, and return AI outputs directly within channels."
 x_grok,X/Grok,assets/grok.svg,gui,Graphical User Interface,2,"Users can prompt and generate content on the social media platform through Grok."
-huggingface,HuggingFace,assets/hugging_face.svg,model_access,Model Access Providers,3,"Platform for hosting AI models and datasets."
+huggingface,Hugging Face,assets/hugging_face.svg,model_access,Model Access Providers,3,"Platform for hosting AI models and datasets."
 github,GitHub,assets/github_apis.svg,model_access,Model Access Providers,3,"Popular software hosting platform that can also be used for hosting AI models"
 civitai,CivitAI,assets/civit_ai.svg,model_access,Model Access Providers,3,"Social media platform for sharing fine-tuned models with monetisation options for popular or high-demand models."
 rest_api,REST API,assets/undress_ai.svg,model_access,Model Access Providers,3,"Allows developers to access the ML model using code instead of a graphical user interface."

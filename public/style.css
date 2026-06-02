@@ -477,7 +477,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  width: 64px;
+  width: 80px;
   cursor: pointer;
   user-select: none;
   transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
@@ -515,7 +515,7 @@ body {
 
 .node-label {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   color: #000000;
   text-align: center;
@@ -567,6 +567,15 @@ body {
 .active-state .node.active-path-node .node-label,
 #canvas.tooltip-pinned .node.tooltip-source .node-label {
   font-weight: 700 !important;
+}
+
+/* Highlight outline and fill of the whole layer when active */
+.layer-container.active-layer-highlight {
+  border: 2px solid var(--layer-active-color) !important;
+  background-image: none !important;
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+  transition: border-color var(--transition-speed) ease, background-color var(--transition-speed) ease;
 }
 
 /* --- Tooltip focus dimming --- */
@@ -807,6 +816,12 @@ body {
     background-image: none !important;
   }
 
+  .layer-container.active-layer-highlight {
+    border: 2px solid var(--layer-active-color) !important;
+    background-image: none !important;
+    background-color: #ffffff !important;
+  }
+
   .node {
     width: auto;
     height: 100%;
@@ -826,6 +841,10 @@ body {
     height: 14.4px;
     background: none;
     border: none;
+  }
+
+  .node:hover .node-icon {
+    border: none !important;
   }
 
   .node-icon img {
@@ -968,6 +987,10 @@ body {
   .node-icon {
     width: 32px;
     height: 32px;
+  }
+
+  .node:hover .node-icon {
+    border: 1px solid rgba(0, 0, 0, 0.25) !important;
   }
 
   .node-icon img {
