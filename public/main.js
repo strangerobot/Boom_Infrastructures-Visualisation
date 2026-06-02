@@ -228,12 +228,10 @@ function selectWorkflow(flowId) {
       const nodeId = el.dataset.nodeId;
       const node = nodesData.find(n => n.id === nodeId);
       const isDatasetNode = node && node.layerId === 'datasets';
-      const isMlModelNode = node && node.layerId === 'ml_models';
       
       const shouldHighlight = flow && (
         flow.nodeIds.includes(nodeId) || 
-        (isDatasetNode && hasDatasetInFlow) ||
-        (isMlModelNode && isClothoffFlow)
+        (isDatasetNode && hasDatasetInFlow)
       );
       
       if (shouldHighlight) {
@@ -255,16 +253,11 @@ function selectWorkflow(flowId) {
       }
     }
 
-    // Highlight outline of ml_models layer if active (specifically for ClothOff scenario)
+    // Highlight outline of ml_models layer if active (always remove active highlight)
     const mlModelsLayerEl = document.querySelector('.layer-row[data-layer-id="ml_models"] .layer-container');
     if (mlModelsLayerEl) {
-      if (isClothoffFlow) {
-        mlModelsLayerEl.classList.add('active-layer-highlight');
-        mlModelsLayerEl.style.setProperty('--layer-active-color', flow.color);
-      } else {
-        mlModelsLayerEl.classList.remove('active-layer-highlight');
-        mlModelsLayerEl.style.removeProperty('--layer-active-color');
-      }
+      mlModelsLayerEl.classList.remove('active-layer-highlight');
+      mlModelsLayerEl.style.removeProperty('--layer-active-color');
     }
 
   } else {

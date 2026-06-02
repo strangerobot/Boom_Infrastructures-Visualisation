@@ -924,7 +924,7 @@ body {
 }
 
 /* --- Tablet View --- */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 850px) {
   #navbar {
     padding: 14px 20px;
     min-height: 60px;
