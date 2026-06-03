@@ -70,7 +70,7 @@ body {
 }
 
 #visualisation-wrapper {
-  background-color: #ffffff;
+  background-color: var(--bg-canvas);
   border: 1px solid var(--border-color) !important;
   border-radius: 25px !important;
   width: calc(100% - 8px);
@@ -78,6 +78,7 @@ body {
   min-height: calc(100vh - 8px) !important;
   display: flex;
   flex-direction: column;
+  padding: 10px 0 0 0;
   overflow-y: visible !important;
   overflow-x: hidden !important;
   position: relative;
@@ -95,75 +96,77 @@ body {
 /* --- Top Navbar --- */
 #navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  padding: 16px 20px;
-  background-color: #ffffff;
-  min-height: 64px;
+  padding: 10px 15px;
+  background-color: transparent;
+  height: 70px;
   flex-shrink: 0;
-  border-top-left-radius: 24px;
-  border-top-right-radius: 24px;
+  position: relative;
 }
 
 #navbar-left {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  pointer-events: none;
 }
 
 #diagram-title {
   font-family: var(--font-serif);
-  font-size: 18px;
-  font-weight: 500;
-  color: #000000;
+  font-size: 14px;
+  font-weight: 400;
+  color: #111111;
   margin: 0;
+  white-space: nowrap;
 }
 
 #fullscreen-btn {
-  background-color: #faf6f0;
+  background-color: #e6ded5;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  width: 64px;
-  height: 48px;
+  width: 52px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   outline: none;
+  color: #333333;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
 }
 
 #fullscreen-btn:hover {
-  background-color: #f0e6da;
-  border-color: var(--border-color);
+  background-color: #faf8f5;
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
   transform: translateY(-1px);
 }
 
 #fullscreen-btn:active {
-  background-color: #e4d5c3;
+  background-color: #dcd3c5;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
   transform: translateY(0);
 }
 
-#fullscreen-btn div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
-#fullscreen-btn img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
+#fullscreen-btn svg {
   display: block;
+  width: 26px;
+  height: 26px;
 }
 
 /* --- Canvas Container --- */
 #canvas-container {
-  background-color: var(--bg-canvas);
-  border-top: 1px solid var(--border-color);
+  background-color: #faf6f0;
+  border: 0.5px solid var(--border-color);
   padding: 15px 20px;
   display: flex;
   flex-direction: column;
@@ -172,7 +175,7 @@ body {
   width: 100%;
   height: 100vh;
   overflow: visible !important;
-  border-radius: 24px;
+  border-radius: 26px 26px 24px 24px;
 }
 
 /* --- Workflow Selection Header --- */
@@ -199,22 +202,26 @@ body {
   width: 100%;
   max-width: 400px;
   height: 44px;
-  background-color: #faf6f0;
+  background-color: var(--bg-canvas);
   border: 1px solid var(--border-color);
   border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   user-select: none;
 }
 
 #workflow-select-wrapper:hover {
-  background-color: #f0e6da;
-  border-color: var(--border-color);
+  background-color: #faf8f5;
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
   transform: translateY(-1px);
 }
 
 #workflow-select-wrapper:active {
-  background-color: #e4d5c3;
+  background-color: #dcd3c5;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
   transform: translateY(0);
 }
 
@@ -227,7 +234,7 @@ body {
   padding: 0 20px;
   font-family: var(--font-serif);
   font-size: 14px;
-  color: #000000;
+  color: #333333;
   font-weight: 500;
   transition: color var(--transition-speed) ease;
 }
@@ -240,7 +247,7 @@ body {
 
 #canvas-container:not(.workflow-active) #workflow-selected-text {
   font-weight: 400;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 #workflow-select-arrow {
@@ -688,23 +695,14 @@ body {
 /* --- Fullscreen Mode --- */
 #visualisation-wrapper:fullscreen {
   width: 100vw;
-  height: auto !important;
-  min-height: 100vh !important;
+  height: 100vh !important;
   max-width: none;
   border-radius: 0;
-  padding: 0;
-  background-color: #ffffff;
+  padding: 15px;
+  background-color: var(--bg-canvas);
   overflow-y: auto !important;
-}
-
-#visualisation-wrapper:fullscreen #navbar {
-  padding: 15px 30px;
-}
-
-#visualisation-wrapper:fullscreen #canvas-container {
-  border-radius: 0;
-  overflow: visible !important;
-  flex-grow: 1;
+  border: none !important;
+  box-shadow: none;
 }
 
 /* Custom Scrollbar */
@@ -727,23 +725,26 @@ body {
 }
 
 /* --- Mobile View --- */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   #navbar {
-    padding: 12px 15px;
+    padding: 5px 10px;
+    height: 56px;
     min-height: 56px;
   }
 
   #diagram-title {
-    font-size: 14px;
+    font-size: 10px;
   }
+
 
   #fullscreen-btn {
     width: 44px;
     height: 36px;
     border-radius: 8px;
+    border: 1px solid var(--border-color);
   }
 
-  #fullscreen-btn img {
+  #fullscreen-btn svg {
     width: 24px;
     height: 24px;
   }
@@ -753,16 +754,21 @@ body {
   }
 
   #canvas-container {
-    padding: 10px 0 0 0;
+    padding: 15px 15px 0 15px;
     flex-grow: 1;
   }
 
   #workflow-section {
     margin-bottom: 8px;
+    width: 100%;
   }
 
   #workflow-select-wrapper {
     height: 36px;
+    border-radius: 15px;
+  }
+
+  #workflow-dropdown-list {
     border-radius: 15px;
   }
 
@@ -935,25 +941,24 @@ body {
 }
 
 /* --- Tablet View --- */
-@media (min-width: 481px) and (max-width: 850px) {
+@media (min-width: 601px) and (max-width: 850px) {
   #navbar {
-    padding: 14px 20px;
-    min-height: 60px;
+    padding: 10px 15px;
+    height: 70px;
+    min-height: 70px;
   }
 
-  #diagram-title {
-    font-size: 16px;
-  }
 
   #fullscreen-btn {
     width: 52px;
     height: 40px;
     border-radius: 8px;
+    border: 1px solid var(--border-color);
   }
 
-  #fullscreen-btn img {
-    width: 28px;
-    height: 28px;
+  #fullscreen-btn svg {
+    width: 26px;
+    height: 26px;
   }
 
   #app {
@@ -1020,53 +1025,7 @@ body {
   }
 }
 
-/* Narrow tablet sub-breakpoint: tighten textbox further so container has more room */
-@media (min-width: 481px) and (max-width: 580px) {
-  .layer-row {
-    gap: 12px;
-  }
 
-  .layer-textbox {
-    flex: 0 0 140px;
-    min-width: 0;
-  }
-
-  .layer-title {
-    font-size: 11px;
-  }
-
-  .layer-desc {
-    font-size: 10px;
-    line-height: 1.35;
-  }
-
-  .layer-container {
-    gap: 2px;
-    padding: 6px 32px 6px 4px;
-    flex-wrap: nowrap;
-    justify-content: center;
-  }
-
-  .node {
-    width: 48px;
-    gap: 2px;
-    flex-shrink: 0;
-  }
-
-  .node-icon {
-    width: 28px;
-    height: 28px;
-  }
-
-  .node-icon img {
-    width: 14px;
-    height: 14px;
-  }
-
-  .node-label {
-    font-size: 9px;
-  }
-}
 
 /* --- Footer Credits --- */
 #footer-credits {
@@ -1123,7 +1082,7 @@ body {
   margin: 0;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .note-row {
     margin-top: 15px;
   }
@@ -1146,9 +1105,9 @@ body {
           <h1 id="diagram-title">Infrastructure Tech Stack</h1>
         </div>
         <button id="fullscreen-btn" aria-label="Toggle Full Screen" title="Toggle Full Screen" data-node-id="41:506">
-          <div data-node-id="41:507" data-name="Full Screen">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAACXElEQVR4nO3dzWoUQRSG4XelkowX4cLRteDCeEXiwj/MeA+6Ma4TDQkogbkFQTAKEo33ooG4GEYKShLitIux+/RJ+n2g131OfdM9MFVTBZIkSZIkSZLUoxvABHgN7C1x7QKPgNUeai/3fFxrWKb20vM6MCaBq8A2MAPmLVyHwCiw/nKv7y3VPqvhRNb/VxjfWmrm9DUJ7OFZB/V/7SuU7Q6amQPTwB6mHfVQnpTw74y2XlNnr5eBfbzqqIdZ9HdKF4/6HPgJ3Azso9zrqKNeIl+9bLVc/DHwEbhDvDVgv9bQZk+bkU3s/aOQoZk3XGWMwhjICQNJxkCSMZBkDCQZA0nGQJIxkGQMJBkDScZAkjGQZFIEsttQRPnFdGiOG8ZiJ7KIhw1FlJ/Qh2a/YSweRK/UOFwwudTHfEbf1hZMcpW1BivRhYzqrNi0TrtGzvRlU3rfqGOx3ufKE0mSJEmSJEmSJEmSJEmSpBhXgCfAO+A5cI3hug68AN7WnfEuRxdQbnhwZoHxD+AWw3O7LjQ/PRZfgEuRRdxvWIL/nuH50DAW9yKLeNNQRPmkDM1Rhl3l/Etbsr+0GcgJA0nGQJIxkGQMJBkDScZAkjGQZAwkGQNJxkCSMZBkUgTS9mb8v4BPdSOXaHeBz7WGc7sZf1fHVRxdoOMqyiY0YcYdHuiyEdjHhTnQhToB00Uz0wtw5FHo6+qPUT0Aq+1mJuf81XvQ535Zo/qkzM7pCWejBTvj/c9rajPL5mXj+iW2teThjDt1j8KVHmpfrXtI7ixZe+n5aV0KJEmSJEmSJEn04jdnKNngMeQO2QAAAABJRU5ErkJggg==" alt="Full Screen Icon">
-          </div>
+          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 12V6h6M26 12V6h-6M6 20v6h6M26 20v6h-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </button>
       </div>
 
