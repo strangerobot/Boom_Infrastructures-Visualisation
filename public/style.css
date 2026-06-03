@@ -62,7 +62,7 @@ body {
   height: 100vh !important;
   display: flex;
   flex-direction: column;
-  padding: 10px 0 0 0;
+  padding: 0;
   overflow: hidden !important;
   position: relative;
   -ms-overflow-style: none;
@@ -83,7 +83,7 @@ body {
   align-items: center;
   padding: 10px 15px;
   background-color: transparent;
-  height: 70px;
+  height: 60px;
   flex-shrink: 0;
   position: relative;
 }
@@ -102,7 +102,7 @@ body {
 
 #diagram-title {
   font-family: var(--font-serif);
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 400;
   color: #111111;
   margin: 0;
@@ -727,6 +727,10 @@ body {
 
 /* --- Mobile View --- */
 @media (max-width: 600px) {
+  #visualisation-wrapper {
+    padding: 0;
+  }
+
   #navbar {
     padding: 5px 10px;
     height: 56px;
@@ -734,7 +738,7 @@ body {
   }
 
   #diagram-title {
-    font-size: 10px;
+    font-size: 12px;
   }
 
 
